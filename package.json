@@ -7,5 +7,13 @@
     "test": "jest"
   },
   "author": "jrc03c",
-  "license": "ISC"
+  "license": "ISC",
+  "bin": {
+    "camelify": "src/camelify-bin.js",
+    "camel": "src/camelify-bin.js",
+    "kebabify": "src/kebabify-bin.js",
+    "kebab": "src/kebabify-bin.js",
+    "snakeify": "src/snakeify-bin.js",
+    "snake": "src/snakeify-bin.js"
+  }
 }
