@@ -1,0 +1,11 @@
+{
+  "name": "@jrc03c/varify",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "jrc03c",
+  "license": "ISC"
+}

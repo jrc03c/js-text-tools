@@ -4,6 +4,10 @@ const doubleSpace = "  "
 const singleSpace = " "
 
 function strip(text) {
+  if (typeof text !== "string") {
+    throw new Error("`text` must be a string!")
+  }
+
   let out = ""
 
   for (let i = 0; i < text.length; i++) {
@@ -23,6 +27,4 @@ function strip(text) {
   return out.trim()
 }
 
-if (typeof module !== "undefined") {
-  module.exports = strip
-}
+module.exports = strip
