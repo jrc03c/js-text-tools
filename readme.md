@@ -1,19 +1,19 @@
 # Introduction
 
-**varify.js** makes it easy to convert text to variable names. I needed this for a work project, so I whipped it up real quick.
+**js-text-tools** is just a little collection of tools for modifying text. It can be used either in the command line or in JS projects.
 
 # Installation
 
 To use in the command line:
 
 ```bash
-npm install -g https://github.com/jrc03c/varify.js
+npm install -g https://github.com/jrc03c/js-text-tools.js
 ```
 
 Or to use in a project:
 
 ```bash
-npm install --save https://github.com/jrc03c/varify.js
+npm install --save https://github.com/jrc03c/js-text-tools.js
 ```
 
 # Usage
