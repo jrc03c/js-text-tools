@@ -15,6 +15,8 @@ function strip(text) {
 
     if (alpha.includes(char)) {
       out += char
+    } else if (char === "'" || char === "’" || char === "❜") {
+      out += ""
     } else {
       out += singleSpace
     }
