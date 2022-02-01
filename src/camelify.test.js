@@ -10,4 +10,6 @@ test("tests `camelify`", () => {
   expect(camelify("'42 is the number thou shalt count!'")).toBe(
     "42IsTheNumberThouShaltCount"
   )
+
+  expect(camelify("I don't like you.")).toBe("iDontLikeYou")
 })

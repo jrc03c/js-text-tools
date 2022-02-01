@@ -10,4 +10,6 @@ test("tests `snakeify`", () => {
   expect(snakeify("'42 is the number thou shalt count!'")).toBe(
     "42_is_the_number_thou_shalt_count"
   )
+
+  expect(snakeify("I don't like you.")).toBe("i_dont_like_you")
 })
