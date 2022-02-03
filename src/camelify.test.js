@@ -12,4 +12,10 @@ test("tests `camelify`", () => {
   )
 
   expect(camelify("I don't like you.")).toBe("iDontLikeYou")
+
+  expect(camelify("howAboutNow")).toBe("howAboutNow")
+
+  expect(camelify("heresAnotherOne_YesOrNo-orMaybeSo")).toBe(
+    "heresAnotherOneYesOrNoOrMaybeSo"
+  )
 })

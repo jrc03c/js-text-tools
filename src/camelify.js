@@ -1,26 +1,35 @@
-const strip = require("./helpers/strip.js")
-
-function capitalize(text) {
-  return text[0].toUpperCase() + text.substring(1, text.length).toLowerCase()
-}
-
 function camelify(text) {
   if (typeof text !== "string") {
     throw new Error("`text` must be a string!")
   }
 
-  const words = strip(text).split(" ")
+  text = text.trim()
+  let out = ""
+  let shouldCapitalizeNextCharacter = false
 
-  if (words.length === 0) return ""
-  if (words.length === 1) return words[0]
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
 
-  return (
-    words[0].toLowerCase() +
-    words
-      .slice(1)
-      .map(w => capitalize(w))
-      .join("")
-  )
+    if (char.match(/[A-Za-z0-9]/g)) {
+      if (out.length === 0) {
+        out += char.toLowerCase()
+      } else if (shouldCapitalizeNextCharacter) {
+        out += char.toUpperCase()
+      } else {
+        out += char
+      }
+
+      shouldCapitalizeNextCharacter = false
+    } else if (
+      !char.includes("'") &&
+      !char.includes("’") &&
+      !char.includes("❜")
+    ) {
+      shouldCapitalizeNextCharacter = true
+    }
+  }
+
+  return out
 }
 
 module.exports = camelify

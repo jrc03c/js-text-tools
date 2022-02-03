@@ -12,4 +12,6 @@ test("tests `kebabify`", () => {
   )
 
   expect(kebabify("I don't like you.")).toBe("i-dont-like-you")
+
+  expect(kebabify("how-about-now")).toBe("how-about-now")
 })

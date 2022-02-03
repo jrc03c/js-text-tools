@@ -12,4 +12,6 @@ test("tests `snakeify`", () => {
   )
 
   expect(snakeify("I don't like you.")).toBe("i_dont_like_you")
+
+  expect(snakeify("how_about_now")).toBe("how_about_now")
 })
