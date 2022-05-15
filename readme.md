@@ -29,6 +29,7 @@ const {
   kebabify,
   snakeify,
   unindent,
+  wrap,
 } = require("@jrc03c/js-text-tools")
 ```
 
@@ -43,6 +44,10 @@ kebabify "Hello, world!"
 
 snakeify "Hello, world!"
 # hello_world
+
+# wrap the lines in somefile.txt at 80 characters and write the results out to
+# a new file called somefile-wrapped.txt
+wrap somefile.txt 80 somefile-wrapped.txt
 ```
 
 # API
@@ -114,3 +119,19 @@ Hello, world!
 ```
 
 **NOTE:** The `unindent` function does _not_ pay attention to whether indentation consists of spaces or tabs. It only cares whether or not a character is a whitespace character. It also makes no attempt to make the whitespace characters consistent (i.e., it doesn't try to begin each line with _all_ spaces or _all_ tabs); it merely removes the minimum number of whitespace characters from each line and returns the result.
+
+## `wrap(text, maxLineLength)`
+
+Returns the text with all lines wrapped to a maximum length of `maxLineLength`. By default, the `maxLineLength` is 80. Note that this function only wraps at spaces; it does not wrap mid-word, and it does not attempt to hyphenate words.
+
+```js
+wrap("Hello, world! My name is Josh. What's your name?", 10)
+/*
+Hello,
+world! My
+name is
+Josh.
+What's
+your name?
+*/
+```
