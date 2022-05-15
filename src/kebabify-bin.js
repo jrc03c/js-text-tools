@@ -2,7 +2,7 @@
 const kebabify = require("./kebabify.js")
 
 if (process.argv.length < 3) {
-  console.log("The syntax is: kebabify <text>")
+  console.log("The syntax is: \x1b[1m\x1b[35kebabify <text>\x1b[0m")
   process.exit(0)
 }
 

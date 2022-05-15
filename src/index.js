@@ -4,6 +4,7 @@ const out = {
   kebabify: require("./kebabify.js"),
   snakeify: require("./snakeify.js"),
   unindent: require("./unindent.js"),
+  wrap: require("./wrap.js"),
 
   dump() {
     Object.keys(out).forEach(key => {

@@ -14,6 +14,11 @@
     "kebabify": "src/kebabify-bin.js",
     "kebab": "src/kebabify-bin.js",
     "snakeify": "src/snakeify-bin.js",
-    "snake": "src/snakeify-bin.js"
+    "snake": "src/snakeify-bin.js",
+    "wrap": "src/wrap-bin.js"
+  },
+  "devDependencies": {
+    "@jrc03c/js-math-tools": "github:jrc03c/js-math-tools",
+    "@jrc03c/make-key": "github:jrc03c/make-key"
   }
 }

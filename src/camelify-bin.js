@@ -2,7 +2,7 @@
 const camelify = require("./camelify.js")
 
 if (process.argv.length < 3) {
-  console.log("The syntax is: camelify <text>")
+  console.log("The syntax is: \x1b[1m\x1b[35camelify <text>\x1b[0m")
   process.exit(0)
 }
 
