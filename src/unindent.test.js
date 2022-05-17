@@ -33,4 +33,17 @@ test("tests that unindentation works as expected", () => {
 
   const fPred = unindent(e)
   expect(fPred).toBe(fTrue)
+
+  const g = `
+    *question: What's your name?
+      Alice
+      Bob
+      Charlie
+      Denise
+      Something else...
+  `
+
+  const hTrue = `*question: What's your name?\n  Alice\n  Bob\n  Charlie\n  Denise\n  Something else...`
+  const hPred = unindent(g).trim()
+  expect(hPred).toBe(hTrue)
 })

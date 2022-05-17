@@ -9,7 +9,13 @@ function indent(text, n, char) {
 
   return text
     .split("\n")
-    .map(line => multiplyText(char, n) + line)
+    .map(line => {
+      if (line.trim().length > 0) {
+        return multiplyText(char, n) + line
+      } else {
+        return line
+      }
+    })
     .join("\n")
 }
 
