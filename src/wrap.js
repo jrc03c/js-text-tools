@@ -6,7 +6,15 @@ function wrap(raw, maxLineLength) {
   }
 
   if (typeof maxLineLength === "undefined" || maxLineLength === null) {
-    maxLineLength = 80
+    if (
+      typeof process !== "undefined" &&
+      typeof process.stdout !== "undefined" &&
+      typeof process.stdout.columns === "number"
+    ) {
+      maxLineLength = process.stdout.columns
+    } else {
+      maxLineLength = 80
+    }
   }
 
   if (isNaN(maxLineLength) || typeof maxLineLength !== "number") {

@@ -20,7 +20,7 @@ npm install --save https://github.com/jrc03c/js-text-tools.js
 
 # Usage
 
-In Node or the browser:
+In Node / bundlers:
 
 ```js
 const {
@@ -31,6 +31,19 @@ const {
   unindent,
   wrap,
 } = require("@jrc03c/js-text-tools")
+```
+
+In the browser (standalone):
+
+```html
+<script src="path/to/dist/js-text-tools.js"></script>
+<script>
+  // import functions individually
+  const { camelify, indent, kebabify, snakeify, unindent, wrap } = JSTextTools
+
+  // or dump everything into the global scope
+  JSTextTools.dump()
+</script>
 ```
 
 In the command line:

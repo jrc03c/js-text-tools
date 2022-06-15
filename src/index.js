@@ -8,7 +8,9 @@ const out = {
 
   dump() {
     Object.keys(out).forEach(key => {
-      global[key] = out[key]
+      if (typeof global !== "undefined") {
+        global[key] = out[key]
+      }
 
       if (typeof window !== "undefined") {
         window[key] = out[key]
@@ -17,4 +19,10 @@ const out = {
   },
 }
 
-module.exports = out
+if (typeof module !== "undefined") {
+  module.exports = out
+}
+
+if (typeof window !== "undefined") {
+  window.JSTextTools = out
+}
