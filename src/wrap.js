@@ -42,20 +42,15 @@ function wrap(raw, maxLineLength, hangingIndentPrefix) {
 
     const indentation = line.split(/[^\s]/g)[0]
     const words = line.replace(indentation, "").split(" ")
-    let temp = ""
+    let temp = indentation
     let hasWrappedAtLeastOnce = false
 
     words.forEach(word => {
-      const newLine = temp + (temp.length > 0 ? " " : "") + word
+      const newLine = temp + (temp.trim().length > 0 ? " " : "") + word
 
       if (newLine.length > maxLineLength) {
-        out.push(
-          indentation +
-            (hasWrappedAtLeastOnce ? hangingIndentPrefix : "") +
-            temp
-        )
-
-        temp = word
+        out.push(temp)
+        temp = indentation + hangingIndentPrefix + word
         hasWrappedAtLeastOnce = true
       } else {
         temp = newLine

@@ -27,6 +27,7 @@ test("tests that wrapping preserves indentation", () => {
 
   lines1.forEach((line, i) => {
     expect(line.startsWith("\t\t")).toBe(true)
+    expect(line.length).toBeLessThanOrEqual(40)
   })
 
   const hangingIndentPrefix = "** "
@@ -39,6 +40,8 @@ test("tests that wrapping preserves indentation", () => {
     } else {
       expect(line.startsWith("\t\t" + hangingIndentPrefix)).toBe(true)
     }
+
+    expect(line.length).toBeLessThanOrEqual(40)
   })
 })
 
