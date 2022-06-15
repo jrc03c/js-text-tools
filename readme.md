@@ -58,6 +58,12 @@ kebabify "Hello, world!"
 snakeify "Hello, world!"
 # hello_world
 
+# indent the lines of somefile.txt by two spaces
+indent somefile.txt "  "
+
+# unindent the lines of somefile.txt
+unindent somefile.txt
+
 # wrap the lines in somefile.txt at 80 characters
 wrap somefile.txt
 
