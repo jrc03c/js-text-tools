@@ -4,12 +4,12 @@ const unindent = require("./unindent.js")
 test("tests that indentation works as expected", () => {
   const a = "Hello, world!"
   const bTrue = "    Hello, world!"
-  const bPred = indent(a, 4)
+  const bPred = indent(a, "    ")
   expect(bPred).toBe(bTrue)
 
   const c = "Hello, world!"
   const dTrue = "\t\t\t\tHello, world!"
-  const dPred = indent(c, 4, "\t")
+  const dPred = indent(c, "\t\t\t\t")
   expect(dPred).toBe(dTrue)
 
   const e = [
@@ -23,7 +23,7 @@ test("tests that indentation works as expected", () => {
     .map(line => "!!!!!!" + line)
     .join("\n")
 
-  const fPred = indent(e, 6, "!")
+  const fPred = indent(e, "!!!!!!")
   expect(fPred).toBe(fTrue)
 
   const g = `
@@ -46,6 +46,6 @@ test("tests that indentation works as expected", () => {
     })
     .join("\n")
 
-  const hPred = indent(g, 2, "\t")
+  const hPred = indent(g, "\t\t")
   expect(hPred).toBe(hTrue)
 })

@@ -10,20 +10,20 @@ const helpMessage = wrap(
     unindent(`
       The syntax is:
 
-        \x1b[1m\x1b[35mwrap <file> \x1b[2m<max-line-length> <hanging-indent-prefix>\x1b[0m
+        \x1b[1m\x1b[35mindent <file> <chars>\x1b[0m
 
       Example:
 
-        \x1b[36mwrap somefile.txt 80 "→→" \x1b[0m
+        \x1b[36mindent somefile.txt ">> "\x1b[0m
 
-      The maximum line length is optional and defaults to the minimum of 80 characters. Use \`wrap --help\` to show this message again.
+      Use \`indent --help\` to show this message again.
     `),
     "  "
   )
 )
 
 try {
-  if (process.argv.length <= 2) {
+  if (process.argv.length <= 3) {
     console.log(helpMessage)
     process.exit()
   }
@@ -34,12 +34,9 @@ try {
   }
 
   const file = path.resolve(process.argv[2])
-  const tempMaxLineLength = parseInt(process.argv[3])
-  const maxLineLength = isNaN(tempMaxLineLength) ? 80 : tempMaxLineLength
-  const hangingIndentPrefix = process.argv.length > 4 ? process.argv[4] : ""
-
   const raw = fs.readFileSync(file, "utf8")
-  const out = wrap(raw, maxLineLength, hangingIndentPrefix)
+  const chars = process.argv[3]
+  const out = indent(raw, chars)
   console.log(out)
 } catch (e) {
   console.log(e)

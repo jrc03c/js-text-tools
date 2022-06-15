@@ -57,9 +57,9 @@ function wrap(raw, maxLineLength, hangingIndentPrefix) {
       }
     })
 
-    out.push(
-      indentation + (hasWrappedAtLeastOnce ? hangingIndentPrefix : "") + temp
-    )
+    if (temp.length > 0) {
+      out.push(temp)
+    }
   })
 
   return out.join("\n")
