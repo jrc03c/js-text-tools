@@ -18,6 +18,30 @@ test("tests that line lengths are correctly constrained", () => {
   })
 })
 
+test("tests that wrapping preserves indentation", () => {
+  const text =
+    "\t\tLorem ipsum dolor sit amet, consectetur adipiscing elit. Nam mollis tellus eu mi condimentum, a congue ipsum luctus. Donec vel suscipit dolor, vitae faucibus massa. Curabitur rhoncus semper tortor et mattis. Nullam laoreet lobortis nibh eget viverra. Nam molestie risus vitae ante placerat convallis. Pellentesque quis tristique dui. Vivamus efficitur mi erat, nec gravida felis posuere at. Donec sapien ipsum, viverra et aliquam quis, posuere ac ligula. Aenean egestas tincidunt mauris, in hendrerit tortor malesuada id. Proin viverra sodales ex eu fermentum. Aenean nisl ipsum, tristique venenatis massa eget, tempor facilisis felis. Praesent aliquam sem vitae arcu porta commodo. Aliquam tempor sollicitudin dapibus. Nulla ullamcorper orci eu ultricies cursus."
+
+  const wrapped1 = wrap(text, 40)
+  const lines1 = wrapped1.split("\n")
+
+  lines1.forEach((line, i) => {
+    expect(line.startsWith("\t\t")).toBe(true)
+  })
+
+  const hangingIndentPrefix = "** "
+  const wrapped2 = wrap(text, 40, hangingIndentPrefix)
+  const lines2 = wrapped2.split("\n")
+
+  lines2.forEach((line, i) => {
+    if (i === 0) {
+      expect(line.startsWith("\t\t")).toBe(true)
+    } else {
+      expect(line.startsWith("\t\t" + hangingIndentPrefix)).toBe(true)
+    }
+  })
+})
+
 test("tests that errors are thrown at appropriate times", () => {
   const rights = [
     ["Hello, world!", null],
