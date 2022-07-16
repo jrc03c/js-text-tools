@@ -3,6 +3,7 @@ const out = {
   indent: require("./indent.js"),
   kebabify: require("./kebabify.js"),
   snakeify: require("./snakeify.js"),
+  stringify: require("./stringify.js"),
   unindent: require("./unindent.js"),
   wrap: require("./wrap.js"),
 
