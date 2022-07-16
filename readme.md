@@ -28,6 +28,7 @@ const {
   indent,
   kebabify,
   snakeify,
+  stringify,
   unindent,
   wrap,
 } = require("@jrc03c/js-text-tools")
@@ -39,7 +40,8 @@ In the browser (standalone):
 <script src="path/to/dist/js-text-tools.js"></script>
 <script>
   // import functions individually
-  const { camelify, indent, kebabify, snakeify, unindent, wrap } = JSTextTools
+  const { camelify, indent, kebabify, snakeify, stringify, unindent, wrap } =
+    JSTextTools
 
   // or dump everything into the global scope
   JSTextTools.dump()
@@ -112,6 +114,27 @@ Returns the text in snake-case.
 snakeify("Hello, world!")
 // hello_world
 ```
+
+## `stringify(value, [replacer], [space])`
+
+Returns `value` converted to a string. This function is identical to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) with one exception: it automatically handles cyclic references by replacing each cyclic reference with the string `"<cyclic reference>"`. For example:
+
+```js
+const { stringify } = require("@jrc03c/js-text-tools")
+const arr = [2, 3, 4]
+arr.push(arr)
+console.log(arr)
+// <ref *1> [ 2, 3, 4, [Circular *1] ]
+
+const arrStringified = stringify(arr)
+console.log(arrStringified)
+// [2,3,4,"<cyclic reference>"]
+
+console.log(typeof arrStringified)
+// string
+```
+
+The gist is that `value` is copied first in such a way that cyclic references are removed, and then the safe copy is passed into `JSON.stringify` along with the optional `replacer` and `space` arguments.
 
 ## `unindent(text)`
 
