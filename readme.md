@@ -117,24 +117,58 @@ snakeify("Hello, world!")
 
 ## `stringify(value, [replacer], [space])`
 
-Returns `value` converted to a string. This function is identical to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) with one exception: it automatically handles cyclic references by replacing each cyclic reference with the string `"<cyclic reference>"`. For example:
+Returns `value` converted to a string. This function is identical to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) with one exception: it automatically handles cyclic references by replacing each cyclic reference with the string `<reference to "/some/path">` where `"/some/path"` represents the path down through the root object to the original referent. Consider this object:
+
+```js
+const myObj = {
+  this: {
+    is: {
+      deeply: {
+        nested: "yep!",
+      },
+    },
+  },
+}
+```
+
+We could add a circular reference to it:
+
+```js
+myObj.this.is.deeply.circular = myObj.this.is
+```
+
+Now, when we inspect the object, we see:
+
+```js
+const util = require("util")
+console.log(util.inspect(myObj, { depth: null, colors: true }))
+// {
+//   this: {
+//     is: <ref *1> {
+//       deeply: { nested: 'yep!', circular: [Circular *1] }
+//     }
+//   }
+// }
+```
+
+Since the circular reference points to `myObj.this.is`, the `stringify` function will replace the circular reference with `"<reference to \"/this/is\">"`:
 
 ```js
 const { stringify } = require("@jrc03c/js-text-tools")
-const arr = [2, 3, 4]
-arr.push(arr)
-console.log(arr)
-// <ref *1> [ 2, 3, 4, [Circular *1] ]
-
-const arrStringified = stringify(arr)
-console.log(arrStringified)
-// [2,3,4,"<cyclic reference>"]
-
-console.log(typeof arrStringified)
-// string
+console.log(stringify(myObj, null, 2))
+// {
+//   "this": {
+//     "is": {
+//       "deeply": {
+//         "nested": "yep!",
+//         "circular": "<reference to \"/this/is\">"
+//       }
+//     }
+//   }
+// }
 ```
 
-The gist is that `value` is copied first in such a way that cyclic references are removed, and then the safe copy is passed into `JSON.stringify` along with the optional `replacer` and `space` arguments.
+The gist is that the value to be stringified is first copied in such a way that cyclic references are replaced with string descriptions, and then the safe copy is passed into `JSON.stringify` along with the optional `replacer` and `space` arguments.
 
 ## `unindent(text)`
 
