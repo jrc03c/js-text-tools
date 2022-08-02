@@ -1,5 +1,4 @@
 const indent = require("./indent.js")
-const unindent = require("./unindent.js")
 
 test("tests that indentation works as expected", () => {
   const a = "Hello, world!"

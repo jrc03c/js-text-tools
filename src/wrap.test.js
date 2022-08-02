@@ -25,7 +25,7 @@ test("tests that wrapping preserves indentation", () => {
   const wrapped1 = wrap(text, 40)
   const lines1 = wrapped1.split("\n")
 
-  lines1.forEach((line, i) => {
+  lines1.forEach(line => {
     expect(line.startsWith("\t\t")).toBe(true)
     expect(line.length).toBeLessThanOrEqual(40)
   })

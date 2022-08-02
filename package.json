@@ -24,6 +24,7 @@
   "devDependencies": {
     "@jrc03c/js-math-tools": "github:jrc03c/js-math-tools",
     "@jrc03c/make-key": "github:jrc03c/make-key",
-    "esbuild": "^0.14.43"
+    "esbuild": "^0.14.43",
+    "eslint": "^8.21.0"
   }
 }
