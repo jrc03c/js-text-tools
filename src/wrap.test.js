@@ -29,20 +29,6 @@ test("tests that wrapping preserves indentation", () => {
     expect(line.startsWith("\t\t")).toBe(true)
     expect(line.length).toBeLessThanOrEqual(40)
   })
-
-  const hangingIndentPrefix = "** "
-  const wrapped2 = wrap(text, 40, hangingIndentPrefix)
-  const lines2 = wrapped2.split("\n")
-
-  lines2.forEach((line, i) => {
-    if (i === 0) {
-      expect(line.startsWith("\t\t")).toBe(true)
-    } else {
-      expect(line.startsWith("\t\t" + hangingIndentPrefix)).toBe(true)
-    }
-
-    expect(line.length).toBeLessThanOrEqual(40)
-  })
 })
 
 test("tests that errors are thrown at appropriate times", () => {
