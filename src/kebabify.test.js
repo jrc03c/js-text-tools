@@ -11,7 +11,7 @@ test("tests `kebabify`", () => {
     "42-is-the-number-thou-shalt-count"
   )
 
-  expect(kebabify("I don't like you.")).toBe("i-dont-like-you")
+  expect(kebabify("I don't like you.")).toBe("i-don-t-like-you")
 
   expect(kebabify("how-about-now")).toBe("how-about-now")
 })
