@@ -1,7 +1,7 @@
 {
   "name": "@jrc03c/js-text-tools",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.4",
+  "description": "a few small tools for working with text in js",
   "main": "src/index.js",
   "scripts": {
     "build": "esbuild src/index.js --bundle --outfile=dist/js-text-tools.js --minify",
