@@ -1,5 +1,6 @@
 const replaceAll = require("./replace-all.js")
-const alpha = "abcdefghijklmnopqrstuvwxyz1234567890"
+const punctuation = require("./punctuation")
+
 const doubleSpace = "  "
 const singleSpace = " "
 
@@ -13,12 +14,10 @@ function strip(text) {
   for (let i = 0; i < text.length; i++) {
     const char = text[i].toLowerCase()
 
-    if (alpha.includes(char)) {
-      out += char
-    } else if (char === "'" || char === "’" || char === "❜") {
-      out += ""
-    } else {
+    if (punctuation.includes(char)) {
       out += singleSpace
+    } else {
+      out += char
     }
   }
 
