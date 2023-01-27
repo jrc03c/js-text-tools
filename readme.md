@@ -93,7 +93,7 @@ camelify("Hello, world!")
 Returns the text with all lines indented by `chars`. By default, `chars` is an empty string.
 
 ```js
-indent("Hello, world!", 2, "\t")
+indent("Hello, world!", "\t\t")
 // \t\tHello, world!
 ```
 
