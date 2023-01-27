@@ -1,12 +1,13 @@
 {
   "name": "@jrc03c/js-text-tools",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "a few small tools for working with text in js",
   "main": "src/index.js",
   "scripts": {
     "build": "esbuild src/index.js --bundle --outfile=dist/js-text-tools.js --minify",
     "watch": "esbuild src/index.js --bundle --outfile=dist/js-text-tools.js --minify --watch",
-    "test": "jest"
+    "test": "jest",
+    "pub": "npm version patch --force && npm publish --access=public"
   },
   "author": "jrc03c",
   "license": "ISC",
