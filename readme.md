@@ -66,15 +66,16 @@ indent somefile.txt "  "
 # unindent the lines of somefile.txt
 unindent somefile.txt
 
-# wrap the lines in somefile.txt at 80 characters
+# wrap the lines in somefile.txt at 80 characters and show the output in stdout
 wrap somefile.txt
 
-# wrap the lines in somefile.txt at 40 characters
-wrap somefile.txt 40
+# wrap the lines in somefile.txt at 40 characters and save the wrapped text
+# back into somefile.txt
+wrap -m 40 -s somefile.txt
 
-# wrap the lines in somefile.txt at 40 characters and give wrapped lines a
-# hanging indent of two asterisks and a space
-wrap somefile.txt 40 "** "
+# wrap the lines in somefile.txt to 80 characters and save the wrapped text
+# into a new file called somewrappedfile.txt
+wrap -o somewrappedfile.txt somefile.txt
 ```
 
 # API
@@ -202,69 +203,60 @@ Hello, world!
 
 **NOTE:** The `unindent` function does _not_ pay attention to whether indentation consists of spaces or tabs. It only cares whether or not a character is a whitespace character. It also makes no attempt to make the whitespace characters consistent (i.e., it doesn't try to begin each line with _all_ spaces or _all_ tabs); it merely removes the minimum number of whitespace characters from each line and returns the result.
 
-## `wrap(text, maxLineLength=80, hangingIndentPrefix="")`
+## `wrap(text, maxLineLength=80)`
 
-Returns the text with all lines wrapped to a maximum length of `maxLineLength`. By default, the `maxLineLength` is 80 in the browser or the minimum of 80 and the number of `stdout` columns in the command line. Note that this function only wraps at spaces; it does not wrap mid-word, and it does not attempt to hyphenate words. The wrapping _does_ preserve indentation, though, and wrapped lines can be prefixed with `hangingIndentPrefix` (which is an empty string by default).
+Returns the text with all lines wrapped to a maximum length of `maxLineLength`. By default, the `maxLineLength` is 80 in the browser or the minimum of 80 and the number of `stdout` columns in the command line. Note that this function only wraps at spaces; it does not wrap mid-word, and it does not attempt to hyphenate words. The wrapping _does_ preserve indentation, though.
 
 ```js
 const text =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam mollis tellus eu mi condimentum, a congue ipsum luctus. Donec vel suscipit dolor, vitae faucibus massa. Curabitur rhoncus semper tortor et mattis. Nullam laoreet lobortis nibh eget viverra. Nam molestie risus vitae ante placerat convallis. Pellentesque quis tristique dui. Vivamus efficitur mi erat, nec gravida felis posuere at. Donec sapien ipsum, viverra et aliquam quis, posuere ac ligula. Aenean egestas tincidunt mauris, in hendrerit tortor malesuada id. Proin viverra sodales ex eu fermentum. Aenean nisl ipsum, tristique venenatis massa eget, tempor facilisis felis. Praesent aliquam sem vitae arcu porta commodo. Aliquam tempor sollicitudin dapibus. Nulla ullamcorper orci eu ultricies cursus."
 
-wrap(text, 20, "-- ")
+wrap(text, 20)
 
 /*
 Lorem ipsum dolor
--- sit amet,
--- consectetur
--- adipiscing elit.
--- Nam mollis tellus
--- eu mi
--- condimentum, a
--- congue ipsum
--- luctus. Donec vel
--- suscipit dolor,
--- vitae faucibus
--- massa. Curabitur
--- rhoncus semper
--- tortor et mattis.
--- Nullam laoreet
--- lobortis nibh
--- eget viverra. Nam
--- molestie risus
--- vitae ante
--- placerat
--- convallis.
--- Pellentesque quis
--- tristique dui.
--- Vivamus efficitur
--- mi erat, nec
--- gravida felis
--- posuere at. Donec
--- sapien ipsum,
--- viverra et
--- aliquam quis,
--- posuere ac
--- ligula. Aenean
--- egestas tincidunt
--- mauris, in
--- hendrerit tortor
--- malesuada id.
--- Proin viverra
--- sodales ex eu
--- fermentum. Aenean
--- nisl ipsum,
--- tristique
--- venenatis massa
--- eget, tempor
--- facilisis felis.
--- Praesent aliquam
--- sem vitae arcu
--- porta commodo.
--- Aliquam tempor
--- sollicitudin
--- dapibus. Nulla
--- ullamcorper orci
--- eu ultricies
--- cursus.
+sit amet,
+consectetur
+adipiscing elit. Nam
+mollis tellus eu mi
+condimentum, a
+congue ipsum luctus.
+Donec vel suscipit
+dolor, vitae
+faucibus massa.
+Curabitur rhoncus
+semper tortor et
+mattis. Nullam
+laoreet lobortis
+nibh eget viverra.
+Nam molestie risus
+vitae ante placerat
+convallis.
+Pellentesque quis
+tristique dui.
+Vivamus efficitur mi
+erat, nec gravida
+felis posuere at.
+Donec sapien ipsum,
+viverra et aliquam
+quis, posuere ac
+ligula. Aenean
+egestas tincidunt
+mauris, in hendrerit
+tortor malesuada id.
+Proin viverra
+sodales ex eu
+fermentum. Aenean
+nisl ipsum,
+tristique venenatis
+massa eget, tempor
+facilisis felis.
+Praesent aliquam sem
+vitae arcu porta
+commodo. Aliquam
+tempor sollicitudin
+dapibus. Nulla
+ullamcorper orci eu
+ultricies cursus.
 */
 ```

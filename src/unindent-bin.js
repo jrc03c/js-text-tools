@@ -1,20 +1,24 @@
 #!/usr/bin/env node
+const color = require("@jrc03c/bash-colors")
 const fs = require("fs")
 const indent = require("./indent.js")
 const path = require("path")
 const unindent = require("./unindent.js")
 const wrap = require("./wrap.js")
 
+const { bright } = color.fx
+const { cyan, magenta } = color.fg
+
 const helpMessage = wrap(
   indent(
     unindent(`
       The syntax is:
 
-        \x1b[1m\x1b[35munindent <file>\x1b[0m
+        ${bright(magenta("unindent <file>"))}
 
       Example:
 
-        \x1b[36munindent somefile.txt\x1b[0m
+        ${cyan("unindent somefile.txt")}
 
       Use \`unindent --help\` to show this message again.
     `),

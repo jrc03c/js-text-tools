@@ -1,8 +1,12 @@
 #!/usr/bin/env node
+const color = require("@jrc03c/bash-colors")
 const camelify = require("./camelify.js")
 
+const { bright } = color.fx
+const { magenta } = color.fg
+
 if (process.argv.length < 3) {
-  console.log("The syntax is: \x1b[1m\x1b[35camelify <text>\x1b[0m")
+  console.log(`\n  The syntax is: ${bright(magenta("camelify <text>"))}\n`)
   process.exit(0)
 }
 
