@@ -1,11 +1,11 @@
 const out = {
-  camelify: require("./camelify.js"),
-  indent: require("./indent.js"),
-  kebabify: require("./kebabify.js"),
-  snakeify: require("./snakeify.js"),
-  stringify: require("./stringify.js"),
-  unindent: require("./unindent.js"),
-  wrap: require("./wrap.js"),
+  camelify: require("./camelify"),
+  indent: require("./indent"),
+  kebabify: require("./kebabify"),
+  snakeify: require("./snakeify"),
+  stringify: require("./stringify"),
+  unindent: require("./unindent"),
+  wrap: require("./wrap"),
 
   dump() {
     Object.keys(out).forEach(key => {

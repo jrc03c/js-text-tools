@@ -1,4 +1,4 @@
-const strip = require("./strip.js")
+const strip = require("./strip")
 
 test("tests `strip`", () => {
   expect(strip("foobarbaz")).toBe("foobarbaz")

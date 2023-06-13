@@ -1,4 +1,4 @@
-const replaceAll = require("./replace-all.js")
+const replaceAll = require("./replace-all")
 
 test("tests `replaceAll`", () => {
   expect(replaceAll("foobar", "o", "z")).toBe("fzzbar")

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const color = require("@jrc03c/bash-colors")
-const kebabify = require("./kebabify.js")
+const kebabify = require("./kebabify")
 
 const { bright } = color.fx
 const { magenta } = color.fg

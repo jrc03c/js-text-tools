@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const color = require("@jrc03c/bash-colors")
-const snakeify = require("./snakeify.js")
+const snakeify = require("./snakeify")
 
 const { bright } = color.fx
 const { magenta } = color.fg

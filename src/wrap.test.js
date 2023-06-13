@@ -1,6 +1,6 @@
-const wrap = require("./wrap.js")
-const makeKey = require("@jrc03c/make-key")
 const { range } = require("@jrc03c/js-math-tools")
+const makeKey = require("@jrc03c/make-key")
+const wrap = require("./wrap")
 
 test("tests that line lengths are correctly constrained", () => {
   const text = range(0, 1000)

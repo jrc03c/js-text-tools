@@ -1,4 +1,4 @@
-const strip = require("./helpers/strip.js")
+const strip = require("./helpers/strip")
 
 function kebabify(text) {
   if (typeof text !== "string") {

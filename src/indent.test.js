@@ -1,4 +1,4 @@
-const indent = require("./indent.js")
+const indent = require("./indent")
 
 test("tests that indentation works as expected", () => {
   const a = "Hello, world!"

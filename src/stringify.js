@@ -1,32 +1,31 @@
-const { decycle } = require("@jrc03c/js-math-tools")
+const {
+  assert,
+  decycle,
+  isArray,
+  isString,
+  isUndefined,
+  range,
+} = require("@jrc03c/js-math-tools")
 
-// 0,
-// 1,
-// 2.3,
-// -2.3,
-// Infinity,
-// -Infinity,
-// NaN,
-// "foo",
-// true,
-// false,
-// null,
-// undefined,
-// Symbol.for("Hello, world!"),
-// [2, 3, 4],
-// [
-//   [2, 3, 4],
-//   [5, 6, 7],
-// ],
-// x => x,
-// function (x) {
-//   return x
-// },
-// { hello: "world" },
-// selfReferencer,
+function prefix(s, n) {
+  if (!s || n <= 0) return ""
 
-function stringify(x, prefix) {
-  function helper(x, prefix) {
+  return range(0, n)
+    .map(() => s)
+    .join("")
+}
+
+function stringify(x, indent) {
+  assert(
+    isString(indent) || isUndefined(indent),
+    "The second parameter to the `stringify` function must be undefined or a string!"
+  )
+
+  const newline = indent ? "\n" : ""
+
+  function helper(x, indent, depth) {
+    depth = depth || 0
+
     if (typeof x === "number" || typeof x === "bigint") {
       if (x === Infinity) {
         return "Infinity"
@@ -68,17 +67,52 @@ function stringify(x, prefix) {
         return "null"
       }
 
-      if (x.map) {
-        return "[" + x.map(v => helper(v, prefix)).join(", ") + "]"
+      if (isArray(x)) {
+        if (x.length === 0) {
+          return prefix(indent, depth - 1) + "[]"
+        }
+
+        return (
+          prefix(indent, depth - 1) +
+          "[" +
+          newline +
+          x
+            .map(v => {
+              let child = helper(v, indent, depth + 1)
+              if (isString(child)) child = child.trim()
+              return prefix(indent, depth + 1) + child
+            })
+            .join("," + newline) +
+          newline +
+          prefix(indent, depth) +
+          "]"
+        )
+      }
+
+      if (Object.keys(x).length === 0) {
+        return prefix(indent, depth - 1) + "{}"
       }
 
       return (
+        prefix(indent, depth - 1) +
         "{" +
+        newline +
         Object.keys(x)
           .map(key => {
-            return JSON.stringify(key) + ": " + helper(x[key], prefix)
+            let child = helper(x[key], indent, depth + 1)
+            if (isString(child)) child = child.trim()
+
+            return (
+              prefix(indent, depth + 1) +
+              JSON.stringify(key) +
+              ":" +
+              (indent ? " " : "") +
+              child
+            )
           })
-          .join(", ") +
+          .join("," + newline) +
+        newline +
+        prefix(indent, depth) +
         "}"
       )
     }
@@ -86,7 +120,7 @@ function stringify(x, prefix) {
     return "undefined"
   }
 
-  return helper(decycle(x), prefix)
+  return helper(decycle(x), indent)
 }
 
 module.exports = stringify

@@ -1,4 +1,4 @@
-const unindent = require("./unindent.js")
+const unindent = require("./unindent")
 
 test("tests that unindentation works as expected", () => {
   const a = "Hello, world!"

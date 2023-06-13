@@ -1,4 +1,4 @@
-const camelify = require("./camelify.js")
+const camelify = require("./camelify")
 
 test("tests `camelify`", () => {
   expect(camelify("foobarbaz")).toBe("foobarbaz")

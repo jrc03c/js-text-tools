@@ -1,5 +1,5 @@
-const replaceAll = require("./replace-all.js")
 const punctuation = require("./punctuation")
+const replaceAll = require("./replace-all")
 
 const doubleSpace = "  "
 const singleSpace = " "

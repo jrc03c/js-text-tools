@@ -1,4 +1,4 @@
-const kebabify = require("./kebabify.js")
+const kebabify = require("./kebabify")
 
 test("tests `kebabify`", () => {
   expect(kebabify("foobarbaz")).toBe("foobarbaz")

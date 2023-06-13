@@ -1,4 +1,4 @@
-const strip = require("./helpers/strip.js")
+const strip = require("./helpers/strip")
 
 function snakeify(text) {
   if (typeof text !== "string") {

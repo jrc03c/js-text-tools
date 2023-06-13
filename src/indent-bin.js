@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 const color = require("@jrc03c/bash-colors")
-const fs = require("fs")
-const indent = require("./indent.js")
-const path = require("path")
-const unindent = require("./unindent.js")
-const wrap = require("./wrap.js")
+const fs = require("node:fs")
+const indent = require("./indent")
+const path = require("node:path")
+const unindent = require("./unindent")
+const wrap = require("./wrap")
 
 const { bright } = color.fx
 const { cyan, magenta } = color.fg

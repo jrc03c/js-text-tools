@@ -1,4 +1,4 @@
-const snakeify = require("./snakeify.js")
+const snakeify = require("./snakeify")
 
 test("tests `snakeify`", () => {
   expect(snakeify("foobarbaz")).toBe("foobarbaz")

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
+const camelify = require("./camelify")
 const color = require("@jrc03c/bash-colors")
-const camelify = require("./camelify.js")
 
 const { bright } = color.fx
 const { magenta } = color.fg
