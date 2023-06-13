@@ -116,9 +116,11 @@ snakeify("Hello, world!")
 // hello_world
 ```
 
-## `stringify(value, [replacer], [space])`
+## `stringify(value, [indentation])`
 
-Returns `value` converted to a string. This function is identical to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) with one exception: it automatically handles cyclic references by replacing each cyclic reference with the string `<reference to "/some/path">` where `"/some/path"` represents the path down through the root object to the original referent. Consider this object:
+Returns `value` converted to a string. If a string is passed as `indentation`, then that string is used to indent each line. For example, passing `"  "` will use two spaces for each indentation of each line; and passing `"\t"` will use a tab for each indentation of each line. If no value or an empty string is passed as `indentation`, then items in lists and key-value pairs in objects won't be placed on new lines and indented. In that way, its functionality is somewhat similar to `JSON.stringify`.
+
+This function automatically handles cyclic references by replacing each cyclic reference with the string `<reference to "/some/path">` where `"/some/path"` represents the path down through the root object to the original referent. Consider this object:
 
 ```js
 const myObj = {
@@ -169,7 +171,7 @@ console.log(stringify(myObj, null, 2))
 // }
 ```
 
-The gist is that the value to be stringified is first copied in such a way that cyclic references are replaced with string descriptions, and then the safe copy is passed into `JSON.stringify` along with the optional `replacer` and `space` arguments.
+The gist is that the value to be stringified is first copied in such a way that cyclic references are replaced with string descriptions, and then the safe copy is actually what gets stringified.
 
 ## `unindent(text)`
 
