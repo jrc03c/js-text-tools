@@ -2,6 +2,7 @@ const {
   assert,
   decycle,
   isArray,
+  isDate,
   isString,
   isUndefined,
   range,
@@ -65,6 +66,10 @@ function stringify(x, indent) {
     if (typeof x === "object") {
       if (x === null) {
         return "null"
+      }
+
+      if (isDate(x)) {
+        return x.toJSON()
       }
 
       if (isArray(x)) {
