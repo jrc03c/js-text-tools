@@ -8,6 +8,8 @@ const {
   range,
 } = require("@jrc03c/js-math-tools")
 
+const convertTypedArrayToObject = require("./helpers/convert-typed-array-to-object")
+
 function prefix(s, n) {
   if (!s || n <= 0) return ""
 
@@ -83,7 +85,14 @@ function stringify(x, indent) {
           newline +
           x
             .map(v => {
-              let child = helper(v, indent, depth + 1)
+              let child = (() => {
+                try {
+                  return helper(convertTypedArrayToObject(v), indent, depth + 1)
+                } catch (e) {
+                  return helper(v, indent, depth + 1)
+                }
+              })()
+
               if (isString(child)) child = child.trim()
               return prefix(indent, depth + 1) + child
             })
@@ -104,7 +113,18 @@ function stringify(x, indent) {
         newline +
         Object.keys(x)
           .map(key => {
-            let child = helper(x[key], indent, depth + 1)
+            let child = (() => {
+              try {
+                return helper(
+                  convertTypedArrayToObject(x[key]),
+                  indent,
+                  depth + 1
+                )
+              } catch (e) {
+                return helper(x[key], indent, depth + 1)
+              }
+            })()
+
             if (isString(child)) child = child.trim()
 
             return (

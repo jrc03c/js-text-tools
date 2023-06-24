@@ -2,6 +2,7 @@ const out = {
   camelify: require("./camelify"),
   indent: require("./indent"),
   kebabify: require("./kebabify"),
+  parse: require("./parse"),
   snakeify: require("./snakeify"),
   stringify: require("./stringify"),
   unindent: require("./unindent"),

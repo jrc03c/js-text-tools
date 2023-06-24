@@ -1,5 +1,6 @@
-const { random, round, seed } = require("@jrc03c/js-math-tools")
+const { isEqual, random, round, seed } = require("@jrc03c/js-math-tools")
 const makeKey = require("@jrc03c/make-key")
+const parse = require("./parse")
 const stringify = require("./stringify")
 const unindent = require("./unindent")
 
@@ -262,4 +263,34 @@ test("tests that indentation can be applied when stringifying", () => {
     .join("\n")
 
   expect(xPred).toBe(xTrue)
+})
+
+test("tests that values can be stringified and parsed back to their original value", () => {
+  const variables = [
+    0,
+    1,
+    2.3,
+    -2.3,
+    Infinity,
+    -Infinity,
+    NaN,
+    "foo",
+    true,
+    false,
+    null,
+    undefined,
+    Symbol.for("Hello, world!"),
+    [2, 3, 4],
+    [
+      [2, 3, 4],
+      [5, 6, 7],
+    ],
+    { hello: "world" },
+  ]
+
+  variables.forEach(value => {
+    const s = stringify(value)
+    const p = parse(s)
+    expect(isEqual(value, p)).toBe(true)
+  })
 })
