@@ -286,6 +286,8 @@ test("tests that values can be stringified and parsed back to their original val
       [5, 6, 7],
     ],
     { hello: "world" },
+    new Uint8Array([1, 3, 5, 7, 9]),
+    { buffer: new Uint8Array([1, 3, 5, 7, 9]) },
   ]
 
   variables.forEach(value => {

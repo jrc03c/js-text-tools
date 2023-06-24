@@ -79,6 +79,10 @@ function stringify(x, indent) {
           return prefix(indent, depth - 1) + "[]"
         }
 
+        if (!(x instanceof Array)) {
+          return JSON.stringify(convertTypedArrayToObject(x), null, indent)
+        }
+
         return (
           prefix(indent, depth - 1) +
           "[" +
