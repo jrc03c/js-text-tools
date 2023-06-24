@@ -107,6 +107,10 @@ kebabify("Hello, world!")
 // hello-world
 ```
 
+## `parse(text)`
+
+Returns the value represented by the string `text`. For security reasons, function strings are not parsed.
+
 ## `snakeify(text)`
 
 Returns the text in snake-case.
@@ -172,6 +176,14 @@ console.log(stringify(myObj, null, 2))
 ```
 
 The gist is that the value to be stringified is first copied in such a way that cyclic references are replaced with string descriptions, and then the safe copy is actually what gets stringified.
+
+Finally, note that the built-in typed arrays (e.g., `Float64Array`) are stringified in a special way: they're converted to objects and _then_ stringified. The objects to which they're converted have these properties:
+
+- `constructor` = A string representing the name of the class to which the array belongs (e.g., a `Float64Array` would have a `constructor` value of `"Float64Array"`).
+- `flag` = The string `"FLAG_TYPED_ARRAY"`.
+- `values` = A new, non-typed array containing the values from the original typed array.
+
+The reason for this additional stringification step is that typed arrays can't be stringified by `JSON.stringify` and then reinstantiated automatically in their original type by `JSON.parse`. So, the `stringify` and `parse` functions in this library are designed to handle those and a few other edge cases — though they otherwise function mostly like `JSON.stringify` and `JSON.parse`.
 
 ## `unindent(text)`
 
