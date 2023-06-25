@@ -43,12 +43,18 @@ test("tests that the `convertTypedArrayToObject` works correctly", () => {
       type === "Array"
         ? Array.from(x)
         : {
-            constructor: type,
-            flag: "FLAG_TYPED_ARRAY",
+            [Symbol.for("@TypedArrayConstructor")]: type,
             values: Array.from(x),
           }
 
     const yPred = convertTypedArrayToObject(x)
+
+    if (!isEqual(yTrue, yPred)) {
+      console.log(type.name)
+      console.log(yTrue)
+      console.log(yPred)
+    }
+
     expect(isEqual(yTrue, yPred)).toBe(true)
   })
 })
@@ -73,8 +79,7 @@ test("tests that the `convertObjectToTypedArray` works correctly", () => {
     const lowerType = type.toLowerCase()
 
     const x = {
-      constructor: type,
-      flag: "FLAG_TYPED_ARRAY",
+      [Symbol.for("@TypedArrayConstructor")]: type,
       values: normal(100).map(v => {
         if (lowerType.includes("int")) {
           v = round(v)
@@ -95,25 +100,31 @@ test("tests that the `convertObjectToTypedArray` works correctly", () => {
     const yTrue = new types[type](x.values)
     const yPred = convertObjectToTypedArray(x)
     expect(isEqual(yTrue, yPred)).toBe(true)
-    expect(yTrue.constructor.name).toBe(type)
-    expect(yPred.constructor.name).toBe(type)
+    expect(yTrue[Symbol.for("@TypedArrayConstructor")]).toBe(type.name)
+    expect(yPred[Symbol.for("@TypedArrayConstructor")]).toBe(type.name)
   })
 
   const a = {
-    constructor: "ArrayBuffer",
-    flag: "FLAG_TYPED_ARRAY",
+    [Symbol.for("@TypedArrayConstructor")]: "ArrayBuffer",
     values: [2, 3, 4],
   }
 
   const bTrue = new Uint8Array([2, 3, 4]).buffer
   const bPred = convertObjectToTypedArray(a)
   expect(isEqual(bTrue, bPred)).toBe(true)
-  expect(bPred.constructor.name).toBe(bTrue.constructor.name)
 
-  const c = { constructor: a.constructor, values: a.values }
-  const d = { constructor: a.constructor, flag: a.flag }
-  const e = { flag: a.flag, values: a.values }
-  const wrongs = [c, d, e]
+  expect(bPred[Symbol.for("@TypedArrayConstructor")]).toBe(
+    bTrue[Symbol.for("@TypedArrayConstructor")]
+  )
+
+  const c = { values: a.values }
+
+  const d = {
+    [Symbol.for("@TypedArrayConstructor")]:
+      a[Symbol.for("@TypedArrayConstructor")],
+  }
+
+  const wrongs = [c, d]
 
   wrongs.forEach(wrong => {
     expect(() => convertObjectToTypedArray(wrong)).toThrow()
@@ -158,7 +169,7 @@ test("tests that typed arrays can be converted to objects and back", () => {
     const xTrue = new types[type](values)
     const xPred = convertObjectToTypedArray(convertTypedArrayToObject(xTrue))
     expect(isEqual(xTrue, xPred)).toBe(true)
-    expect(xTrue.constructor.name).toBe(type)
-    expect(xPred.constructor.name).toBe(type)
+    expect(xTrue[Symbol.for("@TypedArrayConstructor")]).toBe(type.name)
+    expect(xPred[Symbol.for("@TypedArrayConstructor")]).toBe(type.name)
   })
 })

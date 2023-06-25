@@ -1,7 +1,9 @@
 const { isArray } = require("@jrc03c/js-math-tools")
 
 const context =
-  typeof window !== "undefined"
+  typeof globalThis !== "undefined"
+    ? globalThis
+    : typeof window !== "undefined"
     ? window
     : typeof global !== "undefined"
     ? global
@@ -10,10 +12,20 @@ const context =
     : undefined
 
 function convertObjectToTypedArray(x) {
-  if ("flag" in x && x.flag === "FLAG_TYPED_ARRAY") {
-    if (!("values" in x) || !("constructor" in x)) {
+  const typedArrayConstructorSymbol = Symbol.for("@TypedArrayConstructor")
+  const typedArrayConstructorString = "Symbol(@TypedArrayConstructor)"
+
+  const typedArrayConstructorKey =
+    typedArrayConstructorSymbol in x
+      ? typedArrayConstructorSymbol
+      : typedArrayConstructorString in x
+      ? typedArrayConstructorString
+      : undefined
+
+  if (typedArrayConstructorKey) {
+    if (!("values" in x)) {
       throw new Error(
-        "The value passed into the `convertObjectToTypedArray` must have 'constructor' and 'values' properties!"
+        "The value passed into the `convertObjectToTypedArray` must have a 'values' property!"
       )
     }
 
@@ -21,7 +33,7 @@ function convertObjectToTypedArray(x) {
       return new Uint8Array(x.values).buffer
     }
 
-    return new context[x.constructor](x.values)
+    return new context[x[typedArrayConstructorKey]](x.values)
   }
 
   if (isArray(x) && x.constructor.name === "Array") {

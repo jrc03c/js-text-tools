@@ -9,25 +9,42 @@ const convertObjectToTypedArray = require("./helpers/convert-object-to-typed-arr
 function parse(x) {
   try {
     if (typeof x === "string") {
-      if (x === "Infinity") {
+      if (x === "Infinity" || x === '"Infinity"') {
         return Infinity
       }
 
-      if (x === "-Infinity") {
+      if (x === "-Infinity" || x === '"-Infinity"') {
         return -Infinity
       }
 
-      if (x === "NaN") {
+      if (x === "NaN" || x === '"NaN"') {
         return NaN
       }
 
-      if (x === "undefined") {
+      if (x === "undefined" || x === '"undefined"') {
         return undefined
       }
 
-      if (x.match(/^Symbol\(.*?\)$/g)) {
-        x = x.replace("Symbol(", "")
-        x = x.substring(0, x.length - 1)
+      if (x.match(/^"Symbol\(.*?\)"$/g)) {
+        x = x.replace('"Symbol(', "")
+        x = x.substring(0, x.length - 2)
+
+        if (x === "@Infinity" || x === '"@Infinity"') {
+          return Infinity
+        }
+
+        if (x === "@NegativeInfinity" || x === '"@NegativeInfinity"') {
+          return -Infinity
+        }
+
+        if (x === "@NaN" || x === '"@NaN"') {
+          return NaN
+        }
+
+        if (x === "@undefined" || x === '"@undefined"') {
+          return undefined
+        }
+
         return Symbol.for(x)
       }
     }

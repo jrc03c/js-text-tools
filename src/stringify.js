@@ -31,15 +31,15 @@ function stringify(x, indent) {
 
     if (typeof x === "number" || typeof x === "bigint") {
       if (x === Infinity) {
-        return "Infinity"
+        return '"Symbol(@Infinity)"'
       }
 
       if (x === -Infinity) {
-        return "-Infinity"
+        return '"Symbol(@NegativeInfinity)"'
       }
 
       if (isNaN(x)) {
-        return "NaN"
+        return '"Symbol(@NaN)"'
       }
 
       return x.toString()
@@ -54,15 +54,15 @@ function stringify(x, indent) {
     }
 
     if (typeof x === "undefined") {
-      return "undefined"
+      return '"Symbol(@undefined)"'
     }
 
     if (typeof x === "symbol") {
-      return x.toString()
+      return JSON.stringify(x.toString())
     }
 
     if (typeof x === "function") {
-      return x.toString()
+      return JSON.stringify(x.toString())
     }
 
     if (typeof x === "object") {
@@ -71,7 +71,7 @@ function stringify(x, indent) {
       }
 
       if (isDate(x)) {
-        return x.toJSON()
+        return JSON.stringify(x.toJSON())
       }
 
       if (isArray(x)) {
@@ -80,7 +80,7 @@ function stringify(x, indent) {
         }
 
         if (!(x instanceof Array)) {
-          return JSON.stringify(convertTypedArrayToObject(x), null, indent)
+          return helper(convertTypedArrayToObject(x), null, indent)
         }
 
         return (
@@ -107,7 +107,10 @@ function stringify(x, indent) {
         )
       }
 
-      if (Object.keys(x).length === 0) {
+      if (
+        Object.keys(x).length + Object.getOwnPropertySymbols(x).length ===
+        0
+      ) {
         return prefix(indent, depth - 1) + "{}"
       }
 
@@ -116,6 +119,7 @@ function stringify(x, indent) {
         "{" +
         newline +
         Object.keys(x)
+          .concat(Object.getOwnPropertySymbols(x))
           .map(key => {
             let child = (() => {
               try {
@@ -133,7 +137,7 @@ function stringify(x, indent) {
 
             return (
               prefix(indent, depth + 1) +
-              JSON.stringify(key) +
+              helper(key) +
               ":" +
               (indent ? " " : "") +
               child

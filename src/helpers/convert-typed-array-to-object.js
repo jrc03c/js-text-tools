@@ -16,8 +16,7 @@ function convertTypedArrayToObject(x) {
     x instanceof Uint8ClampedArray
   ) {
     return {
-      constructor: x.constructor.name,
-      flag: "FLAG_TYPED_ARRAY",
+      [Symbol.for("@TypedArrayConstructor")]: x.constructor.name,
       values:
         x instanceof ArrayBuffer
           ? Array.from(new Uint8Array(x))
