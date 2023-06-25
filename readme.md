@@ -40,8 +40,16 @@ In the browser (standalone):
 <script src="path/to/dist/js-text-tools.js"></script>
 <script>
   // import functions individually
-  const { camelify, indent, kebabify, snakeify, stringify, unindent, wrap } =
-    JSTextTools
+  const {
+    camelify,
+    indent,
+    kebabify,
+    parse,
+    snakeify,
+    stringify,
+    unindent,
+    wrap,
+  } = JSTextTools
 
   // or dump everything into the global scope
   JSTextTools.dump()

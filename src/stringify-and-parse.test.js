@@ -1,11 +1,11 @@
 const { isEqual, random, round, seed } = require("@jrc03c/js-math-tools")
-// const fs = require("node:fs")
+const fs = require("node:fs")
 const makeKey = require("@jrc03c/make-key")
 const parse = require("./parse")
 const stringify = require("./stringify")
 const unindent = require("./unindent")
 
-// const files = []
+const files = []
 
 test("tests that objects and arrays with circular references can be stringified", () => {
   const arr = [2, 3, 4]
@@ -252,79 +252,69 @@ test("tests that values can be stringified and parsed back to their original val
   })
 })
 
-// test("tests that stringification and parsing work when writing to and reading from disk", () => {
-//   function dubble(x) {
-//     return x * 2
-//   }
+test("tests that stringification and parsing work when writing to and reading from disk", () => {
+  seed(12345)
 
-//   seed(12345)
+  const variables = [
+    0,
+    1,
+    2.3,
+    -2.3,
+    Infinity,
+    -Infinity,
+    NaN,
+    "foo",
+    true,
+    false,
+    null,
+    undefined,
+    Symbol.for("Hello, world!"),
+    new Date(round(random() * 10e13)),
+  ]
 
-//   const variables = [
-//     0,
-//     1,
-//     2.3,
-//     -2.3,
-//     Infinity,
-//     -Infinity,
-//     NaN,
-//     "foo",
-//     true,
-//     false,
-//     null,
-//     undefined,
-//     Symbol.for("Hello, world!"),
-//     x => x,
-//     new Date(round(random() * 10e13)),
-//     dubble,
-//   ]
+  const obj = {}
+  const frontier = [obj]
 
-//   const obj = {}
-//   const frontier = [obj]
+  for (let i = 0; i < 100; i++) {
+    const endpoint = frontier[parseInt(random() * frontier.length)]
 
-//   for (let i = 0; i < 100; i++) {
-//     const endpoint = frontier[parseInt(random() * frontier.length)]
+    const value =
+      random() < 1 / 4
+        ? []
+        : random() < 1 / 4
+        ? {}
+        : variables[parseInt(random() * variables.length)]
 
-//     const value =
-//       random() < 1 / 4
-//         ? []
-//         : random() < 1 / 4
-//         ? {}
-//         : variables[parseInt(random() * variables.length)]
+    if (endpoint instanceof Array) {
+      endpoint.push(value)
+    } else {
+      const key = makeKey(parseInt(random() * 5) + 1)
+      endpoint[key] = value
+    }
 
-//     if (endpoint instanceof Array) {
-//       endpoint.push(value)
-//     } else {
-//       const key = makeKey(parseInt(random() * 5) + 1)
-//       endpoint[key] = value
-//     }
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      !(value instanceof Date)
+    ) {
+      frontier.push(value)
+    }
+  }
 
-//     if (
-//       typeof value === "object" &&
-//       value !== null &&
-//       !(value instanceof Date)
-//     ) {
-//       frontier.push(value)
-//     }
-//   }
+  const objTrue = parse(stringify(obj))
+  const out = stringify(obj)
+  const filename = makeKey(8) + ".json"
+  files.push(filename)
+  fs.writeFileSync(filename, out, "utf8")
+  const objPred = parse(fs.readFileSync(filename, "utf8"))
+  expect(isEqual(objPred, objTrue)).toBe(true)
+})
 
-//   const out = stringify(obj)
-//   const filename = makeKey(8) + ".json"
-//   files.push(filename)
-//   fs.writeFileSync(filename, out, "utf8")
-//   const objPred = fs.readFileSync(filename, "utf8")
-//   expect(objPred).toBe(out)
-//   expect(isEqual(parse(objPred), obj)).toBe(true)
-
-//   const util = require("node:util")
-//   console.log(util.inspect(obj, { depth: Infinity, colors: true }))
-//   console.log(util.inspect(objPred, { depth: Infinity, colors: true }))
-// })
-
-// afterAll(() => {
-//   files.forEach(file => {
-//     fs.unlinkSync(file)
-//   })
-// })
+afterAll(() => {
+  files.forEach(file => {
+    fs.unlinkSync(file)
+  })
+})
 
 test("tests that core value types can be stringified correctly", () => {
   // prettier-ignore

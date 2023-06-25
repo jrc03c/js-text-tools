@@ -29,7 +29,7 @@ function convertObjectToTypedArray(x) {
       )
     }
 
-    if (x.constructor === "ArrayBuffer") {
+    if (x[typedArrayConstructorKey] === "ArrayBuffer") {
       return new Uint8Array(x.values).buffer
     }
 

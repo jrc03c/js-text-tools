@@ -6,59 +6,91 @@
 
 const convertObjectToTypedArray = require("./helpers/convert-object-to-typed-array")
 
+const specials = {
+  "@Infinity": Infinity,
+  "@NegativeInfinity": -Infinity,
+  "@NaN": NaN,
+  "@undefined": undefined,
+}
+
 function parse(x) {
-  try {
+  function helper(x) {
     if (typeof x === "string") {
-      if (x === "Infinity" || x === '"Infinity"') {
-        return Infinity
-      }
+      if (x.match(/^'?"?Symbol\(.*?\)"?'?$/g)) {
+        x = x.replace(/^.*?Symbol\(/g, "").replace(/\).*?$/g, "")
 
-      if (x === "-Infinity" || x === '"-Infinity"') {
-        return -Infinity
-      }
-
-      if (x === "NaN" || x === '"NaN"') {
-        return NaN
-      }
-
-      if (x === "undefined" || x === '"undefined"') {
-        return undefined
-      }
-
-      if (x.match(/^"Symbol\(.*?\)"$/g)) {
-        x = x.replace('"Symbol(', "")
-        x = x.substring(0, x.length - 2)
-
-        if (x === "@Infinity" || x === '"@Infinity"') {
-          return Infinity
-        }
-
-        if (x === "@NegativeInfinity" || x === '"@NegativeInfinity"') {
-          return -Infinity
-        }
-
-        if (x === "@NaN" || x === '"@NaN"') {
-          return NaN
-        }
-
-        if (x === "@undefined" || x === '"@undefined"') {
-          return undefined
+        if (x in specials) {
+          return specials[x]
         }
 
         return Symbol.for(x)
       }
+
+      try {
+        const f = parseFloat(x)
+
+        if (!isNaN(f) && f.toString() === x) {
+          return f
+        }
+      } catch (e) {
+        // ...
+      }
+
+      try {
+        const d = new Date(Date.parse(x))
+
+        if (d.toString() !== "Invalid Date") {
+          return d
+        }
+      } catch (e) {
+        // ...
+      }
+
+      try {
+        return JSON.parse(x, function (key, value) {
+          try {
+            return parse(value)
+          } catch (e) {
+            return value
+          }
+        })
+      } catch (e) {
+        return x
+      }
     }
 
-    return JSON.parse(x, function (key, value) {
-      try {
-        return convertObjectToTypedArray(value)
-      } catch (e) {
-        return value
+    if (typeof x === "object") {
+      if (x === null) {
+        return null
       }
-    })
-  } catch (e) {
+
+      try {
+        return convertObjectToTypedArray(x)
+      } catch (e) {
+        Object.keys(x)
+          .concat(Object.getOwnPropertySymbols(x))
+          .forEach(key => {
+            try {
+              try {
+                key = parse(key)
+              } catch (e) {
+                // ...
+              }
+
+              x[key] = parse(x[key])
+            } catch (e) {
+              // ...
+            }
+          })
+
+        return x
+      }
+    }
+
     return x
   }
+
+  return helper(x)
 }
 
 module.exports = parse
