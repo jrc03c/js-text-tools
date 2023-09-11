@@ -3,6 +3,7 @@ const out = {
   indent: require("./indent"),
   kebabify: require("./kebabify"),
   parse: require("./parse"),
+  pascalify: require("./pascalify"),
   snakeify: require("./snakeify"),
   stringify: require("./stringify"),
   unindent: require("./unindent"),

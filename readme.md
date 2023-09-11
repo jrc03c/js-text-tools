@@ -27,6 +27,7 @@ const {
   camelify,
   indent,
   kebabify,
+  pascalify,
   snakeify,
   stringify,
   unindent,
@@ -45,6 +46,7 @@ In the browser (standalone):
     indent,
     kebabify,
     parse,
+    pascalify,
     snakeify,
     stringify,
     unindent,
@@ -118,6 +120,15 @@ kebabify("Hello, world!")
 ## `parse(text)`
 
 Returns the value represented by the string `text`. For security reasons, function strings are not parsed.
+
+## `pascalify(text)`
+
+Returns the text in Pascal-case.
+
+```js
+pascalify("Hello, world!")
+// HelloWorld
+```
 
 ## `snakeify(text)`
 
