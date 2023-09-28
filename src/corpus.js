@@ -8,8 +8,7 @@ const {
   log,
 } = require("@jrc03c/js-math-tools")
 
-const safePathJoin = require("./helpers/safe-fs/safe-path-join")
-const safeWrite = require("./helpers/safe-fs/safe-write")
+const { safePathJoin, safeWrite } = require("./helpers/safe-fs")
 const shortHash = require("./helpers/short-hash")
 
 function log10(x) {
