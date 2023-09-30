@@ -2,12 +2,14 @@
 // filesystem path or `localStorage` key is valid. Its only job is to
 // concatenate path parts.
 
+const replaceAll = require("../../helpers/replace-all")
+
 function safePathJoin() {
   const parts = Array.from(arguments)
 
   return parts
     .map((p, i) => {
-      p = p.replaceAll(/\/+/g, "/")
+      p = replaceAll(p, /\/+/g, "/")
 
       if (i > 0) {
         p = p.replace(/^\//g, "")

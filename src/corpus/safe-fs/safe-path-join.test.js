@@ -1,6 +1,6 @@
 const { shuffle } = require("@jrc03c/js-math-tools")
-const punctuation = require("../punctuation")
-const replaceAll = require("../replace-all")
+const punctuation = require("../../helpers/punctuation")
+const replaceAll = require("../../helpers/replace-all")
 const safePathJoin = require("./safe-path-join")
 
 const punctuationWithoutSlash = replaceAll(punctuation, "/", "")

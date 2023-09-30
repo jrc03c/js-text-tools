@@ -1,3 +1,8 @@
+// NOTE: This function is intentionally *not* wrapped in a try / catch block
+// (unlike the adjacent `safeRead` function). That's because it's important to
+// know if a write fails, but it's probably relatively unimportant to know if a
+// read fails because the latter can always just return an undefined value.
+
 const { isBrowser } = require("@jrc03c/js-math-tools")
 const stringify = require("../../stringify")
 
