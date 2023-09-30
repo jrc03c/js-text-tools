@@ -12,11 +12,27 @@ const fs = (() => {
   }
 })()
 
+const path = (() => {
+  try {
+    return require("node:path")
+  } catch (e) {
+    // ...
+  }
+})()
+
 function safeRead(key) {
   assert(
     isString(key),
     "The value passed into the `safeRead` function must be a string representing a filesystem path (in Node) or a `localStorage` key (in the browser)!"
   )
+
+  if (key.trim().length === 0) {
+    if (isBrowser()) {
+      key = "/"
+    } else {
+      key = path.resolve(".")
+    }
+  }
 
   try {
     const out = isBrowser()

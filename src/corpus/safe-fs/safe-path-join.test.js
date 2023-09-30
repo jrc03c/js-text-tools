@@ -1,5 +1,6 @@
 const { punctuation, replaceAll } = require("../../helpers")
 const { shuffle } = require("@jrc03c/js-math-tools")
+const path = require("path")
 const safePathJoin = require("./safe-path-join")
 
 const punctuationWithoutSlash = replaceAll(punctuation, "/", "")
@@ -25,6 +26,10 @@ function multiplyString(s, n) {
 }
 
 test("tests that the `safePathJoin` function works as expected", () => {
+  const here = path.resolve(".")
+  expect(safePathJoin(here)).toBe(here)
+  expect(safePathJoin(...here.split("/"))).toBe(here)
+  expect(safePathJoin("")).toBe("")
   expect(safePathJoin("foo/////bar")).toBe("foo/bar")
   expect(safePathJoin("/////foo/bar")).toBe("/foo/bar")
   expect(safePathJoin("foo/bar/////")).toBe("foo/bar")

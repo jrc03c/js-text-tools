@@ -18,7 +18,7 @@ function safePathJoin() {
       p = p.replace(/\/$/g, "")
       return p.trim()
     })
-    .filter(p => !!p)
+    .filter((p, i) => (i > 0 ? !!p : true))
     .join("/")
 }
 
