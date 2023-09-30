@@ -2,7 +2,7 @@
 // filesystem path or `localStorage` key is valid. Its only job is to
 // concatenate path parts.
 
-const replaceAll = require("../../helpers/replace-all")
+const { replaceAll } = require("../../helpers")
 
 function safePathJoin() {
   const parts = Array.from(arguments)
