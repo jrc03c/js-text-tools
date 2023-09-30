@@ -3,7 +3,7 @@ function replaceAll(text, a, b) {
     throw new Error("`text` must be a string!")
   }
 
-  if (typeof a !== "string") {
+  if (typeof a !== "string" && !(a instanceof RegExp)) {
     throw new Error("`a` must be a string!")
   }
 
