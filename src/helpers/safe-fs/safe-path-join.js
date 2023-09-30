@@ -1,3 +1,7 @@
+// NOTE: This function intentionally does not check to see whether or not a
+// filesystem path or `localStorage` key is valid. Its only job is to
+// concatenate path parts.
+
 function safePathJoin() {
   const parts = Array.from(arguments)
 

@@ -29,6 +29,11 @@ test("tests that the `safePathJoin` function works as expected", () => {
   expect(safePathJoin("foo/////bar")).toBe("foo/bar")
   expect(safePathJoin("/////foo/bar")).toBe("/foo/bar")
   expect(safePathJoin("foo/bar/////")).toBe("foo/bar")
+  expect(safePathJoin("./foo/bar")).toBe("./foo/bar")
+  expect(safePathJoin("../foo/bar")).toBe("../foo/bar")
+  expect(safePathJoin("~/foo/bar")).toBe("~/foo/bar")
+  expect(safePathJoin("../../..")).toBe("../../..")
+  expect(safePathJoin("foo/bar/~")).toBe("foo/bar/~")
 
   const trueParts = []
   const allParts = []
