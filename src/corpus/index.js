@@ -10,9 +10,9 @@ const {
   sort,
 } = require("@jrc03c/js-math-tools")
 
-const { safePathJoin, safeWrite } = require("./helpers/safe-fs")
-const shortHash = require("./helpers/short-hash")
-const strip = require("./helpers/strip")
+const { safePathJoin, safeWrite } = require("./safe-fs")
+const shortHash = require("../helpers/short-hash")
+const strip = require("../helpers/strip")
 
 function log10(x) {
   return divide(log(x), log(10))
