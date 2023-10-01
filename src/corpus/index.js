@@ -2,7 +2,9 @@ const {
   assert,
   divide,
   isArray,
+  isBoolean,
   isFunction,
+  isObject,
   isString,
   isUndefined,
   log,
@@ -12,45 +14,103 @@ const {
 
 const { safePathJoin, safeRead, safeWrite } = require("./safe-fs")
 const { shortHash, strip } = require("../helpers")
+const Cache = require("./cache")
 
 function log10(x) {
   return divide(log(x), 2.302585092994046)
 }
 
 class Corpus {
+  static Cache = Cache
+
   static safeFs = {
     safePathJoin,
     safeRead,
     safeWrite,
   }
 
-  static clean(text) {
+  static cleanText(text) {
     return strip(text)
       .split(/\s/g)
       .filter(v => v.length > 0)
       .join(" ")
   }
 
-  static getWordSet(text) {
-    return sort(set(Corpus.clean(text).split(" ")))
+  static async getDocId(doc, hasAlreadyBeenCleaned) {
+    assert(
+      isString(doc),
+      "The first argument passed into the `Corpus.getDocId` static method must be a string representing the document whose ID will be computed!"
+    )
+
+    assert(
+      isUndefined(hasAlreadyBeenCleaned) || isBoolean(hasAlreadyBeenCleaned),
+      "The second argument passed into the `Corpus.getDocId` static method must be undefined or a boolean indicating whether or not the first argument (a string) has already been cleaned using the `Corpus.cleanText` static method!"
+    )
+
+    if (!hasAlreadyBeenCleaned) {
+      doc = Corpus.cleanText(doc)
+    }
+
+    return await shortHash(doc)
   }
 
+  static getWordSet(text) {
+    return sort(set(Corpus.cleanText(text).split(" ")))
+  }
+
+  #cache = undefined
+  #cacheDir = undefined
+  #docs = []
   #id = undefined
 
   constructor(docs, cacheDir) {
+    this.docs = docs
+    this.cache = new Cache()
+    this.cacheDir = cacheDir
+  }
+
+  get cache() {
+    return this.#cache
+  }
+
+  set cache(value) {
     assert(
-      isArray(docs) && docs.every(doc => isString(doc)),
+      isObject(value) && value instanceof Cache,
+      `The "cache" property of a \`Corpus\` instance must have a \`Cache\` instance value!`
+    )
+
+    this.#cache = value
+  }
+
+  get cacheDir() {
+    return this.#cacheDir
+  }
+
+  set cacheDir(value) {
+    assert(
+      isUndefined(value) || isString(value),
+      `The "cacheDir" property of a \`Cache\` instance must have an undefined value or a string value!`
+    )
+
+    this.#cacheDir = value
+  }
+
+  get docs() {
+    return this.#docs
+  }
+
+  set docs(value) {
+    assert(
+      isArray(value),
       "The first argument passed into the `Corpus` constructor must be an array of strings representing the list of documents that belong in the corpus!"
     )
 
     assert(
-      isUndefined(cacheDir) || isString(cacheDir),
-      "The second argument passed into the `Corpus` constructor must be undefined or a string representing a filesystem path to a cache directory (or, in the browser, a root key for use in `localStorage`)!"
+      value.every(doc => isString(doc)),
+      "The first argument passed into the `Corpus` constructor must be an array of strings representing the list of documents that belong in the corpus!"
     )
 
-    this.docs = set(docs)
-    this.cache = { words: {}, docs: {} }
-    this.cacheDir = cacheDir
+    this.#docs = set(value)
   }
 
   get id() {
@@ -93,71 +153,52 @@ class Corpus {
       }
 
       const doc = this.docs[i]
-      const cleaned = Corpus.clean(doc)
+      const cleaned = Corpus.cleanText(doc)
       cleanedDocs.push(cleaned)
 
-      const docId = await shortHash(cleaned)
+      const docId = await Corpus.getDocId(cleaned, true)
       docIds.push(docId)
 
       const words = cleaned.split(" ")
-      this.cache.docs[docId] = { wordCount: words.length, mostCommonWord: null }
       let mostCommonWord = null
       let mostCommonWordCount = 0
 
       for (const word of words) {
-        if (!this.cache.words[word]) {
-          this.cache.words[word] = {}
-        }
+        this.cache.incrementWordFrequencyInDoc(word, docId)
+        const freq = this.cache.getWordFrequencyInDoc(word, docId)
 
-        if (!this.cache.words[word][docId]) {
-          this.cache.words[word][docId] = 0
-        }
-
-        this.cache.words[word][docId]++
-
-        if (this.cache.words[word][docId] > mostCommonWordCount) {
-          mostCommonWordCount = this.cache.words[word][docId]
+        if (freq > mostCommonWordCount) {
+          mostCommonWordCount = freq
           mostCommonWord = word
         }
       }
 
-      this.cache.docs[docId].mostCommonWord = mostCommonWord
+      this.cache.setDocWordCount(docId, words.length)
+      this.cache.setDocMostCommonWord(docId, mostCommonWord)
     }
 
-    this.id = await shortHash(cleanedDocs.join("\n\n"))
+    this.#id = await Corpus.getDocId(cleanedDocs.join(" "), true)
 
-    if (this.cacheDir) {
-      safeWrite(safePathJoin(this.cacheDir, this.id + ".json"), this.cache)
+    if (progress) {
+      progress(1)
     }
 
-    progress(1)
     return docIds
   }
 
   async tf(word, docId) {
-    if (!this.cache.words[word]) {
-      return 0
-    }
+    const wordFreq = this.cache.getWordFrequencyInDoc(word, docId)
+    if (wordFreq === 0) return 0
 
-    if (!this.cache.docs[docId]) {
-      throw new Error(
-        "The document you passed into the `tf` method is not part of the corpus and was therefore not indexed!"
-      )
-    }
+    const mostCommonWordFreq = this.cache.getDocMostCommonWordFrequency(docId)
+    if (mostCommonWordFreq === 0) return 0
 
-    const doc = this.cache.docs[docId]
-    const wordFreq = this.cache.words[word][docId]
-    const mostCommonWordFreq = this.cache.words[doc.mostCommonWord][docId]
     return 0.5 + (0.5 * wordFreq) / mostCommonWordFreq
   }
 
   async idf(word) {
-    try {
-      const docCount = Object.keys(this.cache.words[word]).length
-      return log10((this.docs.length - docCount) / docCount)
-    } catch (e) {
-      return NaN
-    }
+    const prevalence = this.cache.getDocPrevalenceForWord(word)
+    return log10((this.docs.length - prevalence + 1) / (prevalence + 1))
   }
 
   async tfidf(word, docId) {
