@@ -29,7 +29,7 @@ function safeWrite(key, value) {
 
   if (isBrowser()) {
     if (isUndefined(value)) {
-      localStorage.removeItem("key")
+      localStorage.removeItem(key)
     } else {
       localStorage.setItem(key, stringify(value))
     }

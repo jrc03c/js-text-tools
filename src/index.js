@@ -1,6 +1,7 @@
 const out = {
   camelify: require("./camelify"),
   Corpus: require("./corpus"),
+  helpers: require("./helpers"),
   indent: require("./indent"),
   kebabify: require("./kebabify"),
   parse: require("./parse"),
