@@ -14,7 +14,7 @@ const { safePathJoin, safeRead, safeWrite } = require("./safe-fs")
 const { shortHash, strip } = require("../helpers")
 
 function log10(x) {
-  return divide(log(x), log(10))
+  return divide(log(x), 2.302585092994046)
 }
 
 class Corpus {
