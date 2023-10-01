@@ -1,4 +1,10 @@
-const { punctuation, replaceAll } = require("../../helpers")
+const {
+  multiplyString,
+  punctuation,
+  randomString,
+  replaceAll,
+} = require("../../helpers")
+
 const { shuffle } = require("@jrc03c/js-math-tools")
 const path = require("path")
 const safePathJoin = require("./safe-path-join")
@@ -8,22 +14,6 @@ const punctuationWithoutSlash = replaceAll(punctuation, "/", "")
 const allCharacters = "abcdef1234567890"
   .split("")
   .concat(punctuationWithoutSlash)
-
-function randomString(n) {
-  let out = ""
-
-  while (out.length < n) {
-    out += allCharacters[Math.floor(Math.random() * allCharacters.length)]
-  }
-
-  return out
-}
-
-function multiplyString(s, n) {
-  let out = ""
-  for (let i = 0; i < n; i++) out += s
-  return out
-}
 
 test("tests that the `safePathJoin` function works as expected", () => {
   const here = path.resolve(".")
@@ -43,7 +33,7 @@ test("tests that the `safePathJoin` function works as expected", () => {
   const allParts = []
 
   for (let i = 0; i < 100; i++) {
-    const part = randomString(Math.floor(Math.random() * 8) + 1)
+    const part = randomString(Math.floor(Math.random() * 8) + 1, allCharacters)
     trueParts.push(part)
     allParts.push(part)
     allParts.push(multiplyString("/", Math.floor(Math.random() * 5) + 1))
