@@ -24,8 +24,6 @@ class Corpus {
     safeWrite,
   }
 
-  #id = undefined
-
   static clean(text) {
     return strip(text)
       .split(/\s/g)
@@ -36,6 +34,8 @@ class Corpus {
   static getWordSet(text) {
     return sort(set(Corpus.clean(text).split(" ")))
   }
+
+  #id = undefined
 
   constructor(docs, cacheDir) {
     assert(
