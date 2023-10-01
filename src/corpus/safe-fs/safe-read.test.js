@@ -3,7 +3,7 @@ const makeKey = require("@jrc03c/make-key")
 const safeRead = require("./safe-read")
 const safeWrite = require("./safe-write")
 
-const dirs = []
+const files = []
 
 test("tests that the `safeRead` function works as expected", () => {
   expect(safeRead(makeKey(100))).toBe(undefined)
@@ -16,7 +16,7 @@ test("tests that the `safeRead` function works as expected", () => {
   expect(safeRead(key)).toBe(undefined)
   safeWrite(key, value)
   expect(safeRead(key)).toBe(value)
-  dirs.push(key)
+  files.push(key)
 
   const wrongs = [
     0,
@@ -50,8 +50,8 @@ test("tests that the `safeRead` function works as expected", () => {
 })
 
 afterAll(() => {
-  for (const dir of dirs) {
-    const root = dir.split("/")[0]
+  for (const file of files) {
+    const root = file.split("/")[0]
     safeWrite(root, null)
   }
 })
