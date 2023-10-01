@@ -10,7 +10,7 @@ const {
   sort,
 } = require("@jrc03c/js-math-tools")
 
-const { safePathJoin, safeWrite } = require("./safe-fs")
+const { safePathJoin, safeRead, safeWrite } = require("./safe-fs")
 const { shortHash, strip } = require("../helpers")
 
 function log10(x) {
@@ -18,6 +18,12 @@ function log10(x) {
 }
 
 class Corpus {
+  static safeFs = {
+    safePathJoin,
+    safeRead,
+    safeWrite,
+  }
+
   #id = undefined
 
   static clean(text) {
