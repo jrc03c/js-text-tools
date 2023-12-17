@@ -25,7 +25,7 @@ test("tests that the `Corpus` class works as expected", async () => {
   // Corpus.cleanText
   !(() => {
     const words = range(0, 10).map(() => randomString(floor(random() * 10 + 1)))
-    const cleanewordSetTrue = words.join(" ")
+    const cleanedWordSetTrue = words.join(" ")
     let rawDoc = ""
 
     for (const word of words) {
@@ -35,7 +35,7 @@ test("tests that the `Corpus` class works as expected", async () => {
     }
 
     const cleanewordSetPred = Corpus.cleanText(rawDoc)
-    expect(isEqual(cleanewordSetPred, cleanewordSetTrue)).toBe(true)
+    expect(isEqual(cleanewordSetPred, cleanedWordSetTrue)).toBe(true)
   })()
 
   // Corpus.getWordSet
