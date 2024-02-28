@@ -235,6 +235,8 @@ test("tests that values can be stringified and parsed back to their original val
     null,
     undefined,
     Symbol.for("Hello, world!"),
+    /hello, .*/g,
+    new RegExp("hello, .*", "g"),
     [2, 3, 4],
     [
       [2, 3, 4],
@@ -269,6 +271,8 @@ test("tests that stringification and parsing work when writing to and reading fr
     null,
     undefined,
     Symbol.for("Hello, world!"),
+    /hello, .*/g,
+    new RegExp("hello, .*", "g"),
     new Date(round(random() * 10e13)),
   ]
 
@@ -347,6 +351,8 @@ test("tests that core value types can be stringified correctly", () => {
     [null, "null"],
     [undefined, '"Symbol(@undefined)"'],
     [Symbol.for("Hello, world!"), '"Symbol(Hello, world!)"'],
+    [/hello, .*/g, "/hello, .*/g"],
+    [new RegExp("hello, .*", "g"), "/hello, .*/g"],
     [[2, 3, 4], "[2,3,4]"],
     [
       [

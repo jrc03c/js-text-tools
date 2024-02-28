@@ -65,6 +65,10 @@ function stringify(x, indent) {
       return JSON.stringify(x.toString())
     }
 
+    if (x instanceof RegExp) {
+      return x.toString()
+    }
+
     if (typeof x === "object") {
       if (x === null) {
         return "null"

@@ -26,6 +26,26 @@ function parse(x) {
         return Symbol.for(x)
       }
 
+      const xTrimmed = x.trim()
+
+      if (xTrimmed.match(/^\/.*?\/(d|g|i|m|s|u|v|y)*?$/g)) {
+        try {
+          const pattern = xTrimmed
+            .replace(/^\//g, "")
+            .replace(/\/(d|g|i|m|s|u|v|y)*?$/g, "")
+
+          const flags = xTrimmed
+            .match(/\/(d|g|i|m|s|u|v|y)*?$/g)
+            .at(-1)
+            .split("/")
+            .at(-1)
+
+          return new RegExp(pattern, flags)
+        } catch (e) {
+          // ...
+        }
+      }
+
       try {
         const f = parseFloat(x)
 
