@@ -11,14 +11,14 @@ test("tests that objects and arrays with circular references can be stringified"
   const arr = [2, 3, 4]
   arr.push([[arr]])
   arr.push([5, 6, [arr]])
-  const arrTrue = `[2,3,4,[["<reference to \\"/\\">"]],[5,6,["<reference to \\"/\\">"]]]`
+  const arrTrue = `[2,3,4,[["Symbol(@String):<reference to \\"/\\">"]],[5,6,["Symbol(@String):<reference to \\"/\\">"]]]`
   expect(stringify(arr)).toBe(arrTrue)
 
   const obj = { hello: { to: { the: "world" } } }
   obj.hello.to.copy = obj.hello.to
   obj["self"] = { x: { y: { z: obj.hello.to } } }
   obj["arr"] = { values: [2, obj.hello.to, 3, 4] }
-  const objTrue = `{"hello":{"to":{"the":"world","copy":"<reference to \\"/hello/to\\">"}},"self":{"x":{"y":{"z":{"the":"world","copy":"<reference to \\"/hello/to\\">"}}}},"arr":{"values":[2,{"the":"world","copy":"<reference to \\"/hello/to\\">"},3,4]}}`
+  const objTrue = `{"hello":{"to":{"the":"Symbol(@String):world","copy":"Symbol(@String):<reference to \\"/hello/to\\">"}},"self":{"x":{"y":{"z":{"the":"Symbol(@String):world","copy":"Symbol(@String):<reference to \\"/hello/to\\">"}}}},"arr":{"values":[2,{"the":"Symbol(@String):world","copy":"Symbol(@String):<reference to \\"/hello/to\\">"},3,4]}}`
   expect(stringify(obj)).toBe(objTrue)
 })
 
@@ -154,10 +154,10 @@ test("tests that indentation can be applied when stringifying", () => {
             "189f": {
               "9": [],
               "d6": {
-                "9deg1": "foo",
+                "9deg1": "Symbol(@String):foo",
                 "d3f": [
                   {
-                    "9": "foo",
+                    "9": "Symbol(@String):foo",
                     "962": [],
                     "2g2bb": {},
                     "4b8ce": "Symbol(Hello, world!)",
@@ -202,7 +202,7 @@ test("tests that indentation can be applied when stringifying", () => {
           ],
           "87b8": [
             {
-              "4f": "foo",
+              "4f": "Symbol(@String):foo",
               "ad": "x => x"
             }
           ]
@@ -361,7 +361,7 @@ test("tests that core value types can be stringified correctly", () => {
     [Infinity, '"Symbol(@Infinity)"'],
     [-Infinity, '"Symbol(@NegativeInfinity)"'],
     [NaN, '"Symbol(@NaN)"'],
-    ["foo", '"foo"'],
+    ["foo", '"Symbol(@String):foo"'],
     [true, "true"],
     [false, "false"],
     [null, "null"],
@@ -379,18 +379,18 @@ test("tests that core value types can be stringified correctly", () => {
     ],
     [x => x, '"x => x"'],
     [dubble, JSON.stringify(dubble.toString())],
-    [{ hello: "world" }, '{"hello":"world"}'],
+    [{ hello: "world" }, '{"hello":"Symbol(@String):world"}'],
     [now, JSON.stringify(now.toJSON())],
-    [selfReferencer, '[2,3,4,"<reference to \\"/\\">"]'],
+    [selfReferencer, '[2,3,4,"Symbol(@String):<reference to \\"/\\">"]'],
     [
       new Uint8Array([2, 3, 4]),
-      '{"values":[2,3,4],"Symbol(@TypedArrayConstructor)":"Uint8Array"}',
+      '{"values":[2,3,4],"Symbol(@TypedArrayConstructor)":"Symbol(@String):Uint8Array"}',
     ],
     [
       buffer,
       `{"values":${JSON.stringify(
         Array.from(ui8Array)
-      )},"Symbol(@TypedArrayConstructor)":"ArrayBuffer"}`,
+      )},"Symbol(@TypedArrayConstructor)":"Symbol(@String):ArrayBuffer"}`,
     ],
   ]
 

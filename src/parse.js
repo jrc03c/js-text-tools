@@ -15,15 +15,24 @@ const specials = {
 
 function parse(x) {
   function helper(x) {
+    // console.log("parsing:", x, typeof x)
+    // console.log("------------------------")
     if (typeof x === "string") {
-      if (x.match(/^'?"?Symbol\(.*?\)"?'?$/g)) {
-        x = x.replace(/^.*?Symbol\(/g, "").replace(/\).*?$/g, "")
+      if (x.trim().match(/^("|')?Symbol\(@String\).*?("|')?$/g)) {
+        return x
+          .trim()
+          .replace(/^("|')?Symbol\(@String\):/g, "")
+          .replace(/("|')?$/g, "")
+      }
 
-        if (x in specials) {
-          return specials[x]
+      if (x.match(/^'?"?Symbol\(.*?\)"?'?$/g)) {
+        const xTemp = x.replace(/^.*?Symbol\(/g, "").replace(/\).*?$/g, "")
+
+        if (xTemp in specials) {
+          return specials[xTemp]
         }
 
-        return Symbol.for(x)
+        return Symbol.for(xTemp)
       }
 
       const xTrimmed = x.trim()
@@ -77,7 +86,13 @@ function parse(x) {
       try {
         return JSON.parse(x, function (key, value) {
           try {
-            return parse(value)
+            const out = helper(value)
+
+            if (typeof out === "string") {
+              return JSON.stringify(out)
+            }
+
+            return out
           } catch (e) {
             return value
           }
@@ -99,19 +114,29 @@ function parse(x) {
           .concat(Object.getOwnPropertySymbols(x))
           .forEach(key => {
             try {
+              let origKey = key
+
               try {
-                key = parse(key)
+                key = helper(key)
               } catch (e) {
                 // ...
               }
 
-              x[key] = parse(x[key])
+              x[key] = helper(x[origKey])
+
+              if (key !== origKey) {
+                delete x[origKey]
+              }
             } catch (e) {
               // ...
             }
           })
 
-        return x
+        try {
+          return convertObjectToTypedArray(x)
+        } catch (e) {
+          return x
+        }
       }
     }
 

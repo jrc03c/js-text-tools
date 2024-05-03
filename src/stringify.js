@@ -46,7 +46,7 @@ function stringify(x, indent) {
     }
 
     if (typeof x === "string") {
-      return JSON.stringify(x)
+      return JSON.stringify("Symbol(@String):" + x)
     }
 
     if (typeof x === "boolean") {
@@ -139,9 +139,12 @@ function stringify(x, indent) {
 
             if (isString(child)) child = child.trim()
 
+            const stringifiedKey =
+              typeof key === "symbol" ? helper(key) : JSON.stringify(key)
+
             return (
               prefix(indent, depth + 1) +
-              helper(key) +
+              stringifiedKey +
               ":" +
               (indent ? " " : "") +
               child
