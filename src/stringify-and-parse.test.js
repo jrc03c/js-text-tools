@@ -257,6 +257,9 @@ test("tests that values can be stringified and parsed back to their original val
     "Symbol.for('Uh-oh!')",
     "[1, 2, 3, 4, 5]",
     "{ 'hello': 'world' }",
+
+    // note: this is currently causing this test to fail! for some reason,
+    // strings inside of objects aren't getting treated like standalone strings!
     { myNumberLikeString: "12345" },
   ]
 
