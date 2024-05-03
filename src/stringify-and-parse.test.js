@@ -257,6 +257,7 @@ test("tests that values can be stringified and parsed back to their original val
     "Symbol.for('Uh-oh!')",
     "[1, 2, 3, 4, 5]",
     "{ 'hello': 'world' }",
+    { myNumberLikeString: "12345" },
   ]
 
   variables.forEach(value => {
