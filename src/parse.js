@@ -46,6 +46,14 @@ function parse(x) {
         }
       }
 
+      if (x.trim().match(/^".*?"$/g)) {
+        try {
+          return JSON.parse(x)
+        } catch (e) {
+          // ...
+        }
+      }
+
       try {
         const f = parseFloat(x)
 

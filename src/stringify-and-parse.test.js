@@ -245,6 +245,18 @@ test("tests that values can be stringified and parsed back to their original val
     { hello: "world" },
     new Uint8Array([1, 3, 5, 7, 9]),
     { buffer: new Uint8Array([1, 3, 5, 7, 9]) },
+
+    // values that look like non-strings but need to be returned as strings:
+    "12345",
+    "January 1, 1970",
+    "Infinity",
+    "NaN",
+    "true",
+    "null",
+    "undefined",
+    "Symbol.for('Uh-oh!')",
+    "[1, 2, 3, 4, 5]",
+    "{ 'hello': 'world' }",
   ]
 
   variables.forEach(value => {
