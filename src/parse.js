@@ -104,13 +104,33 @@ function parseWithJSONParse(x) {
   }
 
   try {
-    const out = JSON.parse(x, (key, value) => {
+    let out = JSON.parse(x, (key, value) => {
       try {
         return parse(value)
       } catch (e) {
         return value
       }
     })
+
+    const fixUndefineds = x => {
+      if (isArray(x)) {
+        for (let i = 0; i < x.length; i++) {
+          x[i] = fixUndefineds(x[i])
+        }
+
+        return x
+      } else {
+        if (typeof x === "undefined") {
+          return undefined
+        }
+
+        return x
+      }
+    }
+
+    if (isArray(out)) {
+      out = fixUndefineds(out)
+    }
 
     return out
   } catch (e) {
