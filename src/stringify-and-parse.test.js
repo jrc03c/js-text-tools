@@ -291,9 +291,13 @@ test("tests that values can be stringified and parsed back to their original val
 
   // test that undefined values are NOT dropped from arrays during
   // stringification and parsing
-  const xTrue = [2, undefined, 4]
-  const xPred = parse(stringify(xTrue))
-  expect(isEqual(xTrue, xPred)).toBe(true)
+  const aTrue = [2, undefined, 4]
+  const aPred = parse(stringify(aTrue))
+  expect(isEqual(aTrue, aPred)).toBe(true)
+
+  const bTrue = { hello: [2, undefined, 4] }
+  const bPred = parse(stringify(bTrue))
+  expect(isEqual(bTrue, bPred)).toBe(true)
 })
 
 test("tests that stringification and parsing work when writing to and reading from disk", () => {

@@ -14,6 +14,34 @@ const specials = {
   "@undefined": undefined,
 }
 
+function fixUndefineds(x) {
+  if (typeof x === "object") {
+    if (x === null) {
+      return x
+    }
+
+    if (isArray(x)) {
+      for (let i = 0; i < x.length; i++) {
+        x[i] = fixUndefineds(x[i])
+      }
+    } else {
+      Object.keys(x)
+        .concat(Object.getOwnPropertySymbols(x))
+        .forEach(key => {
+          x[key] = fixUndefineds(x[key])
+        })
+    }
+
+    return x
+  } else {
+    if (typeof x === "undefined") {
+      return undefined
+    }
+
+    return x
+  }
+}
+
 function parseAsNumber(x) {
   if (typeof x !== "string") {
     if (typeof x === "number") {
@@ -112,22 +140,6 @@ function parseWithJSONParse(x) {
       }
     })
 
-    const fixUndefineds = x => {
-      if (isArray(x)) {
-        for (let i = 0; i < x.length; i++) {
-          x[i] = fixUndefineds(x[i])
-        }
-
-        return x
-      } else {
-        if (typeof x === "undefined") {
-          return undefined
-        }
-
-        return x
-      }
-    }
-
     if (isArray(out)) {
       out = fixUndefineds(out)
     }
@@ -160,6 +172,10 @@ function parseAsDate(x) {
 
 function parseObjectKeysAndValues(x) {
   if (typeof x === "object") {
+    if (x !== null) {
+      return fixUndefineds(x)
+    }
+
     return
   }
 
@@ -185,7 +201,7 @@ function parseObjectKeysAndValues(x) {
       }
     })
 
-  return x
+  return fixUndefineds(x)
 }
 
 function parse(x) {
