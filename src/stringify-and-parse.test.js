@@ -1,4 +1,13 @@
-const { isEqual, random, round, seed } = require("@jrc03c/js-math-tools")
+const {
+  DataFrame,
+  isEqual,
+  normal,
+  random,
+  round,
+  seed,
+  Series,
+} = require("@jrc03c/js-math-tools")
+
 const fs = require("node:fs")
 const makeKey = require("@jrc03c/make-key")
 const parse = require("./parse")
@@ -221,6 +230,13 @@ test("tests that indentation can be applied when stringifying", () => {
 })
 
 test("tests that values can be stringified and parsed back to their original value", () => {
+  const df1 = new DataFrame(normal([100, 10]))
+  const df2 = new DataFrame(normal([100, 10]))
+  df2.values = df2.values.map(row => row.map(() => makeKey(8)))
+  df2.columns = df2.columns.map(() => makeKey(8))
+  const series = new Series(normal(100))
+  series.name = "123abc"
+
   const variables = [
     0,
     1,
@@ -242,10 +258,13 @@ test("tests that values can be stringified and parsed back to their original val
       [2, 3, 4],
       [5, 6, 7],
     ],
-    ["a", "b", "c"],
+    ["a", "b", "c", "123abc", "abc123"],
     { hello: "world" },
     new Uint8Array([1, 3, 5, 7, 9]),
     { buffer: new Uint8Array([1, 3, 5, 7, 9]) },
+    df1,
+    df2,
+    series,
 
     // values that look like non-strings but need to be returned as strings:
     "12345",

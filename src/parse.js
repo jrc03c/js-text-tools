@@ -4,7 +4,8 @@
 // Function("...")` is basically just as insecure as using `eval`.
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function
 
-const convertObjectToTypedArray = require("./helpers/convert-object-to-typed-array")
+const { isArray } = require("@jrc03c/js-math-tools")
+const { convertObjectToTypedArray, isANumberString } = require("./helpers")
 
 const specials = {
   "@Infinity": Infinity,
@@ -13,97 +14,183 @@ const specials = {
   "@undefined": undefined,
 }
 
+function parseAsNumber(x) {
+  if (typeof x !== "string") {
+    if (typeof x === "number") {
+      return x
+    } else {
+      return
+    }
+  }
+
+  if (isANumberString(x)) {
+    return parseFloat(x)
+  }
+}
+
+function parseAsString(x) {
+  if (typeof x !== "string") {
+    return
+  }
+
+  if (x.trim().match(/^("|')?Symbol\(@String\):.*?("|')?$/g)) {
+    let out = x.replace("Symbol(@String):", "")
+
+    if (out.match(/^".*?"$/g)) {
+      out = out.substring(1, out.length - 1)
+    }
+
+    return out
+  }
+}
+
+function parseAsSymbol(x) {
+  if (typeof x !== "string") {
+    if (typeof x === "symbol") {
+      return { out: x, isASymbol: true }
+    } else {
+      return
+    }
+  }
+
+  if (x.trim().match(/^'?"?Symbol\(.*?\)"?'?$/g)) {
+    const xTemp = x.replace(/^.*?Symbol\(/g, "").replace(/\).*?$/g, "")
+
+    if (xTemp in specials) {
+      return { out: specials[xTemp], isASymbol: true }
+    }
+
+    return { out: Symbol.for(xTemp), isASymbol: true }
+  }
+}
+
+function parseAsRegex(x) {
+  if (typeof x !== "string") {
+    if (x instanceof RegExp) {
+      return x
+    } else {
+      return
+    }
+  }
+
+  const xTrimmed = x.trim()
+
+  if (xTrimmed.match(/^\/.*?\/(d|g|i|m|s|u|v|y)*?$/g)) {
+    try {
+      const pattern = xTrimmed
+        .replace(/^\//g, "")
+        .replace(/\/(d|g|i|m|s|u|v|y)*?$/g, "")
+
+      const flags = xTrimmed
+        .match(/\/(d|g|i|m|s|u|v|y)*?$/g)
+        .at(-1)
+        .split("/")
+        .at(-1)
+
+      return new RegExp(pattern, flags)
+    } catch (e) {
+      // ...
+    }
+  }
+}
+
+function parseWithJSONParse(x) {
+  if (typeof x !== "string") {
+    if (typeof x === "object") {
+      return x
+    } else {
+      return
+    }
+  }
+
+  try {
+    const out = JSON.parse(x, (key, value) => {
+      try {
+        return parse(value)
+      } catch (e) {
+        return value
+      }
+    })
+
+    return out
+  } catch (e) {
+    // ...
+  }
+}
+
+function parseAsDate(x) {
+  if (typeof x !== "string") {
+    if (x instanceof Date && x.toString() !== "Invalid Date") {
+      return x
+    } else {
+      return
+    }
+  }
+
+  try {
+    const d = new Date(Date.parse(x))
+
+    if (d.toString() !== "Invalid Date") {
+      return d
+    }
+  } catch (e) {
+    // ...
+  }
+}
+
+function parseObjectKeysAndValues(x) {
+  if (typeof x === "object") {
+    return
+  }
+
+  Object.keys(x)
+    .concat(Object.getOwnPropertySymbols(x))
+    .forEach(key => {
+      try {
+        let origKey = key
+
+        try {
+          key = parse(key)
+        } catch (e) {
+          // ...
+        }
+
+        x[key] = parse(x[origKey])
+
+        if (key !== origKey) {
+          delete x[origKey]
+        }
+      } catch (e) {
+        // ...
+      }
+    })
+
+  return x
+}
+
 function parse(x) {
   function helper(x) {
-    // console.log("parsing:", x, typeof x)
-    // console.log("------------------------")
     if (typeof x === "string") {
-      if (x.trim().match(/^("|')?Symbol\(@String\).*?("|')?$/g)) {
-        return x
-          .trim()
-          .replace(/^("|')?Symbol\(@String\):/g, "")
-          .replace(/("|')?$/g, "")
-      }
+      let out = parseAsString(x)
+      if (typeof out === "string") return out
 
-      if (x.match(/^'?"?Symbol\(.*?\)"?'?$/g)) {
-        const xTemp = x.replace(/^.*?Symbol\(/g, "").replace(/\).*?$/g, "")
+      const results = parseAsSymbol(x)
+      out = results ? results.out : undefined
+      if (results && results.isASymbol) return out
 
-        if (xTemp in specials) {
-          return specials[xTemp]
-        }
+      out = parseAsRegex(x)
+      if (out instanceof RegExp) return out
 
-        return Symbol.for(xTemp)
-      }
+      out = parseAsNumber(x)
+      if (typeof out === "number") return out
 
-      const xTrimmed = x.trim()
+      out = parseAsDate(x)
+      if (out instanceof Date) return out
 
-      if (xTrimmed.match(/^\/.*?\/(d|g|i|m|s|u|v|y)*?$/g)) {
-        try {
-          const pattern = xTrimmed
-            .replace(/^\//g, "")
-            .replace(/\/(d|g|i|m|s|u|v|y)*?$/g, "")
+      out = parseWithJSONParse(x)
+      if (typeof out !== "undefined") return out
 
-          const flags = xTrimmed
-            .match(/\/(d|g|i|m|s|u|v|y)*?$/g)
-            .at(-1)
-            .split("/")
-            .at(-1)
-
-          return new RegExp(pattern, flags)
-        } catch (e) {
-          // ...
-        }
-      }
-
-      if (x.trim().match(/^".*?"$/g)) {
-        try {
-          return JSON.parse(x)
-        } catch (e) {
-          // ...
-        }
-      }
-
-      try {
-        const f = parseFloat(x)
-
-        if (!isNaN(f) && f.toString() === x) {
-          return f
-        }
-      } catch (e) {
-        // ...
-      }
-
-      try {
-        const d = new Date(Date.parse(x))
-
-        if (d.toString() !== "Invalid Date") {
-          return d
-        }
-      } catch (e) {
-        // ...
-      }
-
-      try {
-        return JSON.parse(x, function (key, value) {
-          try {
-            const out = helper(value)
-
-            if (typeof out === "string") {
-              if (typeof helper(out) !== "string") {
-                return JSON.stringify(out)
-              } else {
-                return out
-              }
-            }
-
-            return out
-          } catch (e) {
-            return value
-          }
-        })
-      } catch (e) {
-        return x
-      }
+      return x
     }
 
     if (typeof x === "object") {
@@ -111,37 +198,26 @@ function parse(x) {
         return null
       }
 
+      let out
+
       try {
-        return convertObjectToTypedArray(x)
+        out = convertObjectToTypedArray(x)
+        if (isArray(out)) return out
       } catch (e) {
-        Object.keys(x)
-          .concat(Object.getOwnPropertySymbols(x))
-          .forEach(key => {
-            try {
-              let origKey = key
+        // ...
+      }
 
-              try {
-                key = helper(key)
-              } catch (e) {
-                // ...
-              }
+      out = parseObjectKeysAndValues(x)
 
-              x[key] = helper(x[origKey])
-
-              if (key !== origKey) {
-                delete x[origKey]
-              }
-            } catch (e) {
-              // ...
-            }
-          })
-
+      if (out) {
         try {
-          return convertObjectToTypedArray(x)
+          return convertObjectToTypedArray(out)
         } catch (e) {
-          return x
+          return out
         }
       }
+
+      return x
     }
 
     return x
