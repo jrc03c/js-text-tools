@@ -89,7 +89,11 @@ function parse(x) {
             const out = helper(value)
 
             if (typeof out === "string") {
-              return JSON.stringify(out)
+              if (typeof helper(out) !== "string") {
+                return JSON.stringify(out)
+              } else {
+                return out
+              }
             }
 
             return out

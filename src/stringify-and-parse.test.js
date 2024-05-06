@@ -242,6 +242,7 @@ test("tests that values can be stringified and parsed back to their original val
       [2, 3, 4],
       [5, 6, 7],
     ],
+    ["a", "b", "c"],
     { hello: "world" },
     new Uint8Array([1, 3, 5, 7, 9]),
     { buffer: new Uint8Array([1, 3, 5, 7, 9]) },
