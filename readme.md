@@ -1,3 +1,7 @@
+> ⚠️ **NOTE:** ⚠️ This project is being merged into a monorepo [here](https://github.com/jrc03c/monorepo/tree/main/packages/js-text-tools). This repo will soon be archived.
+
+---
+
 # Introduction
 
 **js-text-tools** is just a little collection of tools for modifying text. It can be used either in the command line or in JS projects.
